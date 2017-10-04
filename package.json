@@ -1,0 +1,26 @@
+{
+  "name": "csv2influx",
+  "version": "0.0.1",
+  "description": "Tool for importing data from csv file to influxdb",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CorpGlory/csv2influx.git"
+  },
+  "keywords": [
+    "influxdb",
+    "csv",
+    "import",
+    "converter",
+    "influxdb"
+  ],
+  "author": "Alexey Velikiy",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/CorpGlory/csv2influx/issues"
+  },
+  "homepage": "https://github.com/CorpGlory/csv2influx#readme"
+}
