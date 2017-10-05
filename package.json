@@ -22,5 +22,10 @@
   "bugs": {
     "url": "https://github.com/CorpGlory/csv2influx/issues"
   },
-  "homepage": "https://github.com/CorpGlory/csv2influx#readme"
+  "homepage": "https://github.com/CorpGlory/csv2influx#readme",
+  "dependencies": {
+    "csv-parse": "^1.2.3",
+    "influxdb-nodejs": "^2.7.4",
+    "stream-transform": "^0.1.2"
+  }
 }

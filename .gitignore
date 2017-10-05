@@ -1,3 +1,5 @@
+csv2influx.conf.json
+
 # Logs
 logs
 *.log
