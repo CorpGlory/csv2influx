@@ -15,14 +15,9 @@ npm install -g csv2influx
 
 ## Usage
 
-1. Init a test config file
+```
+csv2influx init        Creates template config file
+csv2influx data.csv    Loads config file from current directory
+                       then imports file data.csv to your influx
+```
 
-```
-csv2influx init
-```
-
-This will crete a csv2influx.conf.json file where you can define your config
-
-```
-csv2influx import
-```
