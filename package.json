@@ -1,6 +1,6 @@
 {
   "name": "csv2influx",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Tool for importing data from csv file to influxdb",
   "main": "index.js",
   "scripts": {
