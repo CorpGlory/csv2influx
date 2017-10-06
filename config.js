@@ -7,13 +7,16 @@ var config = {
   influxdbUrl: "http://127.0.0.1:8086/INFLUXDB_URL",
   measurmentName: "MEASURMENT_NAME",
   mapping: {
-    timestamp: "Date",
+    timestamp: "date",
     fieldShema: {
+      date: {
+        "format": "jsDate"
+      },
       lat: 'float',
       lng: 'float',
       name: 'string',
       description: 'string',
-      location: 'string'
+      location: 'string',
     },
   },
   csv: {
