@@ -4,8 +4,8 @@ const fs = require('fs');
 const CONF_FILE_NAME = 'csv2influx.conf.json';
 
 var config = {
-  shemaName: "SHEMA_NAME",
   influxdbUrl: "http://127.0.0.1:8086/INFLUXDB_URL",
+  measurmentName: "MEASURMENT_NAME",
   mapping: {
     timestamp: "Date",
     fieldShema: {
@@ -28,8 +28,8 @@ function initConfig() {
 }
 
 function _checkConfigObject(confObj) {
-  if(!confObj.shemaName) {
-    return 'no shemaName field';
+  if(!confObj.measurmentName) {
+    return 'no measurmentName field';
   }
   if(!confObj.influxdbUrl) {
     return 'no influxdbUrl field';

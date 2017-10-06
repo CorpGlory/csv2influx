@@ -26,8 +26,8 @@ csv2influx data.csv    Loads config file from current directory
 ```javascript
 
 {
-  shemaName: "SHEMA_NAME", 
   influxdbUrl: "http://127.0.0.1:8086/INFLUXDB", // INFLUXDB databaase has to exists
+  measurmentName: "MEASURMENT_NAME",
   mapping: {
     timestamp: "Date",
     fieldShema: {

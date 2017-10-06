@@ -5,7 +5,6 @@ const parse = require('csv-parse');
 const transform = require('stream-transform');
 
 
-
 function parseValue(recordValue, mappingObject) {
   if(mappingObject.format === 'jsDate') {
     return (new Date(recordValue)).getTime();
@@ -20,6 +19,7 @@ function flatMappingToInfuxFieldShema(mapping) {
     if(k === mapping.timestamp) {
       res['time'] = 'timestamp';
     } else {
+      var distName = k;
       if(typeof mapping.fieldShema[k] === 'string') {
         res[k] = mapping.fieldShema[k];
       } else {
@@ -27,19 +27,18 @@ function flatMappingToInfuxFieldShema(mapping) {
           console.error('mapping.fieldShema[' + k + '].type is undefined');
           process.exit(errors.ERROR_BAD_CONFIG_FORMAT);
         }
-        var distName = k;
         if(mapping.fieldShema[k].name !== undefined) {
           distName = mapping.fieldShema[k].name;
-          namesMapping[k] = distName;
         }
         res[distName] = mapping.fieldShema[k].type;
       }
+      namesMapping[k] = distName;
     }
   }
   return {
     fieldShema: res,
     namesMapping
-  }
+  };
 }
 
 class Importer {
@@ -68,12 +67,12 @@ class Importer {
       process.exit(errors.ERROR_CONNECTION_TO_DB);
     }
     this.client = client;
-    console.log('Shema: ' + this.config.shemaName);
+    console.log('Shema: ' + this.config.measurmentName);
 
     const TAG_SCHEMA = {};
     var flatMap = flatMappingToInfuxFieldShema(this.config.mapping);
     this.namesMapping = flatMap.namesMapping;
-    client.schema(this.config.shemaName, flatMap.fieldShema, TAG_SCHEMA, {
+    client.schema(this.config.measurmentName, flatMap.fieldShema, TAG_SCHEMA, {
       // default is false
       stripUnknown: true,
     });
@@ -83,12 +82,11 @@ class Importer {
     var input = fs.createReadStream(inputFile);
 
     console.log('Importing');
+    
     var transformer = transform((record, callback) => {
-      // TODO: ignore first line
-      // TODO: collect csv header
       // TODO: add filter
       this.writeRecordToInflux(record)
-        .then(() => callback(null, ' -> ' + record[1] + '\n'))
+        .then(() => callback(null, '.'))
         .catch((err) => {
           console.log(err);
           console.error(JSON.stringify(err, null, 2));
@@ -108,20 +106,28 @@ class Importer {
     };
 
     for(var k in this.config.mapping.fieldShema) {
-      var distName = k;
       if(k === this.config.mapping.timestamp) {
-        distName = 'time';
+        continue;
       }
-      fieldObject[distName] = parseValue(record[k], this.config.mapping.fieldShema[k]);
+      fieldObject[this.namesMapping[k]] = parseValue(record[k], this.config.mapping.fieldShema[k]);
     }
 
     console.log(fieldObject);
 
-    return this.client.write(this.config.shemaName)
+    var writer = this.client.write(this.config.measurmentName)
       .tag({
         // TODO: add tags support
       })
-      .field(fieldObject);
+      .field(fieldObject)
+    
+    if(this.config.mapping.timestamp !== undefined) {
+      var timeKey = this.config.mapping.timestamp;
+      var time = parseValue(record[timeKey], this.config.mapping.fieldShema[timeKey]);
+      writer.time(time);
+      console.log('time ' + time);
+    }
+      
+    return writer;
   }
 
 }
