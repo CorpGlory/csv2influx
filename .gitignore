@@ -1,3 +1,4 @@
+.DS_Store
 csv2influx.conf.json
 
 # Logs

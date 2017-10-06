@@ -22,5 +22,6 @@ if(process.argv[2] === 'init') {
 
 var conf = config.loadConfig();
 var imp = new importer.Importer(conf);
-imp.run();
+// consider process.argv[2] as filename
+imp.run(process.argv[2]);
 
