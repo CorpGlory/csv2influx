@@ -7,7 +7,8 @@ const transform = require('stream-transform');
 
 function parseValue(recordValue, mappingObject) {
   if(mappingObject.format === 'jsDate') {
-    return (new Date(recordValue)).getTime();
+    // convert millisconds to nanoseconds
+    return (new Date(recordValue)).getTime() * 1000 * 1000;
   }
   return recordValue;
 }
