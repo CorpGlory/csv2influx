@@ -48,3 +48,4 @@ csv2influx data.csv    Loads config file from current directory
 
 ```
 
+See [example](example) for more details
