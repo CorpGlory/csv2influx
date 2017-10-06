@@ -3,8 +3,6 @@
 A tool for converting csv file to influxdb database.
 You map csv fields to influxdb columns in config file.
 
-#### In the development. Sorry, you can`t use it now. See the source code to use for your case
-
 https://github.com/CorpGlory/csv2influx
 
 ## Install
@@ -21,6 +19,8 @@ csv2influx data.csv    Loads config file from current directory
                        then imports file data.csv to your influx
 ```
 
+See [example](example) for more details.
+
 ## Config documentation
 
 ```javascript
@@ -36,7 +36,10 @@ csv2influx data.csv    Loads config file from current directory
       },
       lat: 'float',
       lng: 'float',
-      name: 'string',
+      mMeasure: {
+        name: 'title',    // renaming fields available: mMeasure -> name
+        type: 'string'
+      },
       description: 'string',
       location: 'string'
     },
@@ -48,4 +51,3 @@ csv2influx data.csv    Loads config file from current directory
 
 ```
 
-See [example](example) for more details
