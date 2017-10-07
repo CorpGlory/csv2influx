@@ -15,8 +15,8 @@ npm install -g csv2influx
 
 ```
 csv2influx init                                       Creates template config file
-csv2influx --config path/to/config.json data.csv      Loads config from path/to/config.json 
-                                                      then imports file data.csv to your influx
+csv2influx [--config path/to/config.json] data.csv    Loads config from path/to/config.json then imports file data.csv to your influx
+                                                      Default path: ./csv2influx.conf.json
 ```
 
 See [example](example) for more details.

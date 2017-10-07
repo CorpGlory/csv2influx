@@ -83,7 +83,7 @@ class Importer {
         if (cols.indexOf(key) < 0) // if key doesn't exist in cols array
         {
           console.error('Error: there is no column named ' + key + ' in ' + inputFile);
-          console.log('column names: ' + cols)
+          console.error('column names: ' + cols);
           process.exit(errors.ERROR_BAD_CONFIG_FORMAT);
         }
       });

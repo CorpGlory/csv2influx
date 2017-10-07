@@ -53,6 +53,8 @@ function _checkConfigObject(confObj) {
 }
 
 function loadConfig(config_file_name) {
+  config_file_name = typeof config_file_name  !== 'undefined' ? config_file_name : INIT_CONF_FILE_NAME;
+
   console.log('Reading ' + config_file_name);
   if(!fs.existsSync(config_file_name)) {
     console.error(config_file_name + ' doesn`t exist. Can`t continue.');
