@@ -14,9 +14,9 @@ npm install -g csv2influx
 ## Usage
 
 ```
-csv2influx init        Creates template config file
-csv2influx data.csv    Loads config file from current directory
-                       then imports file data.csv to your influx
+csv2influx init                                       Creates template config file
+csv2influx [--config path/to/config.json] data.csv    Loads config from path/to/config.json then imports file data.csv to your influx
+                                                      Default path: ./csv2influx.conf.json
 ```
 
 See [example](example) for more details.
@@ -27,10 +27,10 @@ See [example](example) for more details.
 
 {
   influxdbUrl: "http://127.0.0.1:8086/INFLUXDB", // INFLUXDB database has to exists
-  measurmentName: "MEASURMENT_NAME",
+  measurementName: "MEASUREMENT_NAME",
   mapping: {
     timestamp: "date",
-    fieldShema: {
+    fieldSchema: {
       date: {
         "format": "jsDate" // something what js can parse as string
       },
