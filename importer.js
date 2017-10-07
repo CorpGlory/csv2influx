@@ -5,12 +5,22 @@ const parse = require('csv-parse');
 const transform = require('stream-transform');
 
 
-function parseValue(recordValue, mappingObject) {
+function parseValue(recordObject, recordKey, mappingObject) {
   if(mappingObject === 'timestamp') {
     // convert millisconds to nanoseconds
-    return (new Date(recordValue)).getTime() * 1000 * 1000;
+    if(typeof recordKey === 'object')
+    {
+      var timestamp = [];
+      recordKey.forEach(
+        el => timestamp.push(recordObject[el])
+      );
+
+      return (new Date(timestamp.join(' '))).getTime() * 1000 * 1000;
+    }
+    else
+      return (new Date(recordObject[recordKey]).getTime()) * 1000 * 1000;
   }
-  return recordValue;
+  return recordObject[recordKey];
 }
 
 function flatMappingToInfluxFieldSchema(mapping) {
@@ -80,12 +90,21 @@ class Importer {
 
     this.config.csv.columns = (cols) => { // callback for checking columns names in csv
       Object.keys(this.fieldSchema).forEach(key => {
-        if(cols.indexOf(this.namesMapping[key]) < 0) // if key doesn't exist in cols array
-        {
-          console.error('Error: there is no column named ' + this.namesMapping[key] + ' in ' + inputFile);
-          console.error('column names: ' + cols);
-          process.exit(errors.ERROR_BAD_CONFIG_FORMAT);
+        if(typeof this.namesMapping[key] === 'object') { // if 'from' field is an array - checking each of them
+          this.namesMapping[key].forEach(el => {
+            if(cols.indexOf(el) < 0) {
+              console.error('Error: there is no column named ' + el + ' in ' + inputFile);
+              console.error('column names: ' + cols);
+              process.exit(errors.ERROR_BAD_CONFIG_FORMAT);
+            } 
+          });
         }
+        else
+          if(cols.indexOf(this.namesMapping[key]) < 0) { // if key doesn't exist in cols array
+            console.error('Error: there is no column named ' + this.namesMapping[key] + ' in ' + inputFile);
+            console.error('column names: ' + cols);
+            process.exit(errors.ERROR_BAD_CONFIG_FORMAT);
+          } 
       });
 
       return cols; // callback should return list of columns' names
@@ -120,11 +139,12 @@ class Importer {
 
     var time;
     var schema = this.fieldSchema;
+
     Object.keys(schema).forEach(key => {
       if(schema[key] === 'timestamp')
-        time = parseValue(record[this.namesMapping[key]], schema[key]);
+          time = parseValue(record, this.namesMapping[key], schema[key]);
       else
-        fieldObject[key] = parseValue(record[this.namesMapping[key]], schema[key]);
+        fieldObject[key] = parseValue(record, this.namesMapping[key], schema[key]);
     });
 
     console.log(fieldObject);
