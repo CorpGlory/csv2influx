@@ -1,9 +1,9 @@
 {
-  "measurmentName": "air_quality",
+  "measurementName": "air_quality",
   "influxdbUrl": "http://127.0.0.1:8086/air_metrics",
   "mapping": {
     "timestamp": "Date",
-    "fieldShema": {
+    "fieldSchema": {
       "Date": {
         "format": "jsDate"
       },

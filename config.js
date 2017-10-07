@@ -1,14 +1,14 @@
 const errors = require('./errors');
 const fs = require('fs');
 
-const CONF_FILE_NAME = 'csv2influx.conf.json';
+const INIT_CONF_FILE_NAME = 'csv2influx.conf.json';
 
 var config = {
   influxdbUrl: "http://127.0.0.1:8086/INFLUXDB_URL",
-  measurmentName: "MEASURMENT_NAME",
+  measurementName: "MEASUREMENT_NAME",
   mapping: {
     timestamp: "date",
-    fieldShema: {
+    fieldSchema: {
       date: {
         "format": "jsDate"
       },
@@ -25,14 +25,14 @@ var config = {
 }
 
 function initConfig() {
-  console.log('Wriring ' + CONF_FILE_NAME);
-  fs.writeFileSync(CONF_FILE_NAME, JSON.stringify(config, null, 2));
+  console.log('Writing ' + INIT_CONF_FILE_NAME);
+  fs.writeFileSync(INIT_CONF_FILE_NAME, JSON.stringify(config, null, 2));
   console.log('ok');
 }
 
 function _checkConfigObject(confObj) {
-  if(!confObj.measurmentName) {
-    return 'no measurmentName field';
+  if(!confObj.measurementName) {
+    return 'no measurementName field';
   }
   if(!confObj.influxdbUrl) {
     return 'no influxdbUrl field';
@@ -40,26 +40,26 @@ function _checkConfigObject(confObj) {
   if(!confObj.mapping) {
     return 'no mapping';
   }
-  if(!confObj.mapping.fieldShema) {
-    return 'mapping.fieldShema';
+  if(!confObj.mapping.fieldSchema) {
+    return 'mapping.fieldSchema';
   }
   if(!confObj.mapping.timestamp) {
     return 'mapping.timestamp';
   }
-  if(confObj.mapping.fieldShema[confObj.mapping.timestamp] === undefined) {
-    return "mapping.fieldShema should contain '" + confObj.mapping.timestamp + "' field";
+  if(confObj.mapping.fieldSchema[confObj.mapping.timestamp] === undefined) {
+    return "mapping.fieldSchema should contain '" + confObj.mapping.timestamp + "' field";
   }
   return undefined;
 }
 
-function loadConfig() {
-  console.log('Reading ' + CONF_FILE_NAME);
-  if(!fs.existsSync(CONF_FILE_NAME)) {
-    console.error(CONF_FILE_NAME + ' doesn`t exist. Can`t continue.');
+function loadConfig(config_file_name) {
+  console.log('Reading ' + config_file_name);
+  if(!fs.existsSync(config_file_name)) {
+    console.error(config_file_name + ' doesn`t exist. Can`t continue.');
     console.error('csv2influx init      to create template config')
-    process.exit(errors.ERROR_BAD_CONFIG);
+    process.exit(errors.ERROR_BAD_CONFIG_FILE);
   }
-  var str = fs.readFileSync(CONF_FILE_NAME).toString();
+  var str = fs.readFileSync(config_file_name).toString();
   var confObj = JSON.parse(str);
   console.log('ok');
   console.log('checking format');

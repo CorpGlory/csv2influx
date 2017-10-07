@@ -13,31 +13,31 @@ function parseValue(recordValue, mappingObject) {
   return recordValue;
 }
 
-function flatMappingToInfuxFieldShema(mapping) {
+function flatMappingToInfuxFieldSchema(mapping) {
   var res = {};
   var namesMapping = {};
-  for(var k in mapping.fieldShema) {
+  for(var k in mapping.fieldSchema) {
     if(k === mapping.timestamp) {
       res['time'] = 'timestamp';
     } else {
       var distName = k;
-      if(typeof mapping.fieldShema[k] === 'string') {
-        res[k] = mapping.fieldShema[k];
+      if(typeof mapping.fieldSchema[k] === 'string') {
+        res[k] = mapping.fieldSchema[k];
       } else {
-        if(mapping.fieldShema[k].type === undefined) {
-          console.error('mapping.fieldShema[' + k + '].type is undefined');
+        if(mapping.fieldSchema[k].type === undefined) {
+          console.error('mapping.fieldSchema[' + k + '].type is undefined');
           process.exit(errors.ERROR_BAD_CONFIG_FORMAT);
         }
-        if(mapping.fieldShema[k].name !== undefined) {
-          distName = mapping.fieldShema[k].name;
+        if(mapping.fieldSchema[k].name !== undefined) {
+          distName = mapping.fieldSchema[k].name;
         }
-        res[distName] = mapping.fieldShema[k].type;
+        res[distName] = mapping.fieldSchema[k].type;
       }
       namesMapping[k] = distName;
     }
   }
   return {
-    fieldShema: res,
+    fieldSchema: res,
     namesMapping
   };
 }
@@ -68,12 +68,12 @@ class Importer {
       process.exit(errors.ERROR_CONNECTION_TO_DB);
     }
     this.client = client;
-    console.log('Shema: ' + this.config.measurmentName);
+    console.log('Schema: ' + this.config.measurementName);
 
     const TAG_SCHEMA = {};
-    var flatMap = flatMappingToInfuxFieldShema(this.config.mapping);
+    var flatMap = flatMappingToInfuxFieldSchema(this.config.mapping);
     this.namesMapping = flatMap.namesMapping;
-    client.schema(this.config.measurmentName, flatMap.fieldShema, TAG_SCHEMA, {
+    client.schema(this.config.measurementName, flatMap.fieldSchema, TAG_SCHEMA, {
       // default is false
       stripUnknown: true,
     });
@@ -106,16 +106,16 @@ class Importer {
     var fieldObject = {
     };
 
-    for(var k in this.config.mapping.fieldShema) {
+    for(var k in this.config.mapping.fieldSchema) {
       if(k === this.config.mapping.timestamp) {
         continue;
       }
-      fieldObject[this.namesMapping[k]] = parseValue(record[k], this.config.mapping.fieldShema[k]);
+      fieldObject[this.namesMapping[k]] = parseValue(record[k], this.config.mapping.fieldSchema[k]);
     }
 
     console.log(fieldObject);
 
-    var writer = this.client.write(this.config.measurmentName)
+    var writer = this.client.write(this.config.measurementName)
       .tag({
         // TODO: add tags support
       })
@@ -123,7 +123,7 @@ class Importer {
     
     if(this.config.mapping.timestamp !== undefined) {
       var timeKey = this.config.mapping.timestamp;
-      var time = parseValue(record[timeKey], this.config.mapping.fieldShema[timeKey]);
+      var time = parseValue(record[timeKey], this.config.mapping.fieldSchema[timeKey]);
       writer.time(time);
       console.log('time ' + time);
     }
