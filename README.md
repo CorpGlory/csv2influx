@@ -26,22 +26,34 @@ See [example](example) for more details.
 ```javascript
 
 {
-  influxdbUrl: "http://127.0.0.1:8086/INFLUXDB", // INFLUXDB database has to exists
-  measurementName: "MEASUREMENT_NAME",
+  influxdbUrl: 'http://127.0.0.1:8086/INFLUXDB_URL',
+  measurementName: 'MEASUREMENT_NAME',
   mapping: {
-    timestamp: "date",
     fieldSchema: {
       date: {
-        "format": "jsDate" // something what js can parse as string
+        'from': 'date',
+        'type': 'timestamp'
       },
-      lat: 'float',
-      lng: 'float',
-      mMeasure: {
-        name: 'title',    // renaming fields available: mMeasure -> name
-        type: 'string'
+      lat: {
+        'from': 'lat',
+        'type': 'float'
       },
-      description: 'string',
-      location: 'string'
+      lng: {
+        'from': 'lng',
+        'type': 'float'
+      },
+      name: {
+        'from': 'name',
+        'type': 'string'
+      },
+      descr: { // renaming field available: description -> descr
+        'from': 'description', 
+        'type': 'string'
+      },
+      location: {
+        'from': 'location',
+        'type': 'string'
+      },
     },
   },
   csv: {

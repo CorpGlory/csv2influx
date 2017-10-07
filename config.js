@@ -4,19 +4,34 @@ const fs = require('fs');
 const INIT_CONF_FILE_NAME = 'csv2influx.conf.json';
 
 var config = {
-  influxdbUrl: "http://127.0.0.1:8086/INFLUXDB_URL",
-  measurementName: "MEASUREMENT_NAME",
+  influxdbUrl: 'http://127.0.0.1:8086/INFLUXDB_URL',
+  measurementName: 'MEASUREMENT_NAME',
   mapping: {
-    timestamp: "date",
     fieldSchema: {
       date: {
-        "format": "jsDate"
+        'from': 'date',
+        'type': 'timestamp'
       },
-      lat: 'float',
-      lng: 'float',
-      name: 'string',
-      description: 'string',
-      location: 'string',
+      lat: {
+        'from': 'lat',
+        'type': 'float'
+      },
+      lng: {
+        'from': 'lng',
+        'type': 'float'
+      },
+      name: {
+        'from': 'name',
+        'type': 'string'
+      },
+      descr: {
+        'from': 'description',
+        'type': 'string'
+      },
+      location: {
+        'from': 'location',
+        'type': 'string'
+      },
     },
   },
   csv: {
@@ -43,12 +58,19 @@ function _checkConfigObject(confObj) {
   if(!confObj.mapping.fieldSchema) {
     return 'mapping.fieldSchema';
   }
-  if(!confObj.mapping.timestamp) {
-    return 'mapping.timestamp';
+  
+  var timestamp = false;
+  Object.keys(confObj.mapping.fieldSchema).forEach(key => {
+    if (confObj.mapping.fieldSchema[key].type === 'timestamp') {
+      timestamp = true;
+      return;
+    }
+  });
+
+  if(!timestamp) {
+    return 'no timestamp field';
   }
-  if(confObj.mapping.fieldSchema[confObj.mapping.timestamp] === undefined) {
-    return "mapping.fieldSchema should contain '" + confObj.mapping.timestamp + "' field";
-  }
+
   return undefined;
 }
 
