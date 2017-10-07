@@ -78,7 +78,19 @@ class Importer {
       stripUnknown: true,
     });
 
-    this.config.csv.columns = true;
+    this.config.csv.columns = (cols) => { // callback for checking columns names in csv
+      Object.keys(this.config.mapping.fieldSchema).forEach((key) => {
+        if (cols.indexOf(key) < 0) // if key doesn't exist in cols array
+        {
+          console.error('Error: there is no column named ' + key + ' in ' + inputFile);
+          console.log('column names: ' + cols)
+          process.exit(errors.ERROR_BAD_CONFIG_FORMAT);
+        }
+      });
+
+      return cols; // callback should return list of columns' names
+    };
+
     var parser = parse(this.config.csv);
     var input = fs.createReadStream(inputFile);
 
