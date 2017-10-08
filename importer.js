@@ -5,21 +5,12 @@ const parse = require('csv-parse');
 const transform = require('stream-transform');
 
 
-function parseValue(recordObject, recordKey, mappingObject) {
+function parseValue(recordValue, mappingObject) {
   if(mappingObject === 'timestamp') {
     // convert millisconds to nanoseconds
-    if(typeof recordKey === 'object') {
-      var timestamp = [];
-      recordKey.forEach(
-        el => timestamp.push(recordObject[el])
-      );
-
-      return (new Date(timestamp.join(' '))).getTime() * 1000 * 1000;
-    }
-    else
-      return (new Date(recordObject[recordKey]).getTime()) * 1000 * 1000;
+    return (new Date(recordValue).getTime()) * 1000 * 1000;
   }
-  return recordObject[recordKey];
+  return recordValue;
 }
 
 function flatMappingToInfluxFieldSchema(mapping) {
@@ -144,10 +135,20 @@ class Importer {
 
     Object.keys(schema).forEach(key => {
       if(schema[key] === 'timestamp') {
-          time = parseValue(record, this.namesMapping[key], schema[key]);
+        if(Array.isArray(this.namesMapping[key])) {
+          var timestamp = [];
+          this.namesMapping[key].forEach(
+            el => timestamp.push(record[el])
+          );
+
+          time = parseValue(timestamp, schema[key]);
         }
+        else {
+          time = parseValue(record[this.namesMapping[key]], schema[key]);
+        }
+      }
       else {
-        fieldObject[key] = parseValue(record, this.namesMapping[key], schema[key]);
+        fieldObject[key] = parseValue(record[this.namesMapping[key]], schema[key]);
       }
     });
 
