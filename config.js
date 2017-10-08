@@ -9,28 +9,28 @@ var config = {
   mapping: {
     fieldSchema: {
       date: {
-        'from': 'date',
-        'type': 'timestamp'
+        from: 'date',
+        type: 'timestamp'
       },
       lat: {
-        'from': 'lat',
-        'type': 'float'
+        from: 'lat',
+        type: 'float'
       },
       lng: {
-        'from': 'lng',
-        'type': 'float'
+        from: 'lng',
+        type: 'float'
       },
       name: {
-        'from': 'name',
-        'type': 'string'
+        from: 'name',
+        type: 'string'
       },
       descr: {
-        'from': 'description',
-        'type': 'string'
+        from: 'description',
+        type: 'string'
       },
       location: {
-        'from': 'location',
-        'type': 'string'
+        from: 'location',
+        type: 'string'
       },
     },
   },
