@@ -8,8 +8,7 @@ const transform = require('stream-transform');
 function parseValue(recordObject, recordKey, mappingObject) {
   if(mappingObject === 'timestamp') {
     // convert millisconds to nanoseconds
-    if(typeof recordKey === 'object')
-    {
+    if(typeof recordKey === 'object') {
       var timestamp = [];
       recordKey.forEach(
         el => timestamp.push(recordObject[el])
@@ -88,9 +87,11 @@ class Importer {
       stripUnknown: true,
     });
 
-    this.config.csv.columns = (cols) => { // callback for checking columns names in csv
+    // callback for checking columns names in csv
+    this.config.csv.columns = (cols) => { 
       Object.keys(this.fieldSchema).forEach(key => {
-        if(typeof this.namesMapping[key] === 'object') { // if 'from' field is an array - checking each of them
+        // if 'from' field is an array - checking each of them
+        if(Array.isArray(this.namesMapping[key])) { 
           this.namesMapping[key].forEach(el => {
             if(cols.indexOf(el) < 0) {
               console.error('Error: there is no column named ' + el + ' in ' + inputFile);
@@ -99,15 +100,16 @@ class Importer {
             } 
           });
         }
-        else
-          if(cols.indexOf(this.namesMapping[key]) < 0) { // if key doesn't exist in cols array
+        // if key doesn't exist in cols array
+        else if(cols.indexOf(this.namesMapping[key]) < 0) {
             console.error('Error: there is no column named ' + this.namesMapping[key] + ' in ' + inputFile);
             console.error('column names: ' + cols);
             process.exit(errors.ERROR_BAD_CONFIG_FORMAT);
           } 
       });
 
-      return cols; // callback should return list of columns' names
+      // callback should return list of columns' names
+      return cols; 
     };
 
     var parser = parse(this.config.csv);
@@ -118,9 +120,9 @@ class Importer {
     var transformer = transform((record, callback) => {
       // TODO: add filter
       this.writeRecordToInflux(record)
-        .then(_ => callback(null, ''))
+        .then(() => callback(null, ''))
         .catch(err => {
-          console.log(err);
+          console.error(err);
           console.error(JSON.stringify(err, null, 2));
           process.exit(errors.ERROR_BAD_WRITE);
         });
@@ -141,10 +143,12 @@ class Importer {
     var schema = this.fieldSchema;
 
     Object.keys(schema).forEach(key => {
-      if(schema[key] === 'timestamp')
+      if(schema[key] === 'timestamp') {
           time = parseValue(record, this.namesMapping[key], schema[key]);
-      else
+        }
+      else {
         fieldObject[key] = parseValue(record, this.namesMapping[key], schema[key]);
+      }
     });
 
     console.log(fieldObject);

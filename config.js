@@ -61,7 +61,7 @@ function _checkConfigObject(confObj) {
   
   var timestamp = false;
   Object.keys(confObj.mapping.fieldSchema).forEach(key => {
-    if (confObj.mapping.fieldSchema[key].type === 'timestamp') {
+    if(confObj.mapping.fieldSchema[key].type === 'timestamp') {
       timestamp = true;
       return;
     }
