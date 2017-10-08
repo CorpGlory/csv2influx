@@ -10,7 +10,8 @@ var config = {
     fieldSchema: {
       date: {
         from: 'date',
-        type: 'timestamp'
+        type: 'timestamp',
+        format: 'jsDate'
       },
       lat: {
         from: 'lat',
@@ -60,15 +61,23 @@ function _checkConfigObject(confObj) {
   }
   
   var timestamp = false;
+  var format = false;
   Object.keys(confObj.mapping.fieldSchema).forEach(key => {
     if(confObj.mapping.fieldSchema[key].type === 'timestamp') {
       timestamp = true;
+      if(confObj.mapping.fieldSchema[key].format !== 'undefined') {
+        format = true;
+      }
       return;
     }
   });
 
   if(!timestamp) {
     return 'no timestamp field';
+  }
+
+  if(!format) {
+    return 'no format specified at timestamp field'
   }
 
   return undefined;

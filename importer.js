@@ -6,9 +6,11 @@ const transform = require('stream-transform');
 
 
 function parseValue(recordValue, mappingObject) {
-  if(mappingObject === 'timestamp') {
-    // convert millisconds to nanoseconds
-    return (new Date(recordValue).getTime()) * 1000 * 1000;
+  if(mappingObject.type === 'timestamp') {
+    if(mappingObject.format === 'jsDate') {
+      // convert millisconds to nanoseconds
+      return (new Date(recordValue).getTime()) * 1000 * 1000;
+    }
   }
   return recordValue;
 }
@@ -141,14 +143,14 @@ class Importer {
             el => timestamp.push(record[el])
           );
 
-          time = parseValue(timestamp, schema[key]);
+          time = parseValue(timestamp, this.config.mapping.fieldSchema[key]);
         }
         else {
-          time = parseValue(record[this.namesMapping[key]], schema[key]);
+          time = parseValue(record[this.namesMapping[key]], this.config.mapping.fieldSchema[key]);
         }
       }
       else {
-        fieldObject[key] = parseValue(record[this.namesMapping[key]], schema[key]);
+        fieldObject[key] = parseValue(record[this.namesMapping[key]], this.config.mapping.fieldSchema[key]);
       }
     });
 
