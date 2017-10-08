@@ -5,7 +5,8 @@
     "fieldSchema": {
       "Date": {
         "from": "Date",
-        "type": "timestamp"
+        "type": "timestamp",
+        "format": "jsDate"
       },
       "PT08.S1(CO)": {
         "from": "PT08.S1(CO)",

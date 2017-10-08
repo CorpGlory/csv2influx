@@ -33,7 +33,8 @@ See [example](example) for more details.
     "fieldSchema": {
       "date": { // timestamp will always be "time" in database
         "from": "date",
-        "type": "timestamp"
+        "type": "timestamp",
+        "format": "jsDate" // field "format" is required for timestamp
       },
       "lat": { // fields "from" and "type" are required
         "from": "lat",
@@ -79,8 +80,9 @@ You need to point it out in "timestamp" field:
   "mapping": {
     "fieldSchema": {
       "date": {
-        "from": ["Date of Stop", "Time Of Stop"], // fields "Date of Stop" and "Time of Stop" will be merged to create timestamp
-        "type": "timestamp"
+        "from": ["Date of Stop", "Time Of Stop"], // fields "Date of Stop" and "Time of Stop" will be concatenated to create timestamp
+        "type": "timestamp",
+        "format": "jsDate"
       },
       "lat": {
         "from": "lat",
