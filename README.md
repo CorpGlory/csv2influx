@@ -17,7 +17,7 @@ npm install -g csv2influx
 
 ```
 csv2influx init                                       Creates template config file
-csv2influx [--config path/to/config.json] data.csv    Loads config from path/to/config.json 
+csv2influx [--config path/to/config.json] data.csv    Loads config from path/to/config.json
                                                       then imports file data.csv to your influx
                                                       Default path: ./csv2influx.conf.json
 ```
@@ -34,8 +34,8 @@ csv2influx [--config path/to/config.json] data.csv    Loads config from path/to/
       "date": { // timestamp will always be "time" in database
         "from": "date",
         "type": "timestamp",
-        "format": "jsDate" // field "format" is required for timestamp. 
-                           // in this case means that string will by parsed as 
+        "format": "jsDate" // field "format" is required for timestamp.
+                           // in this case means that string will by parsed as
                            // JavaScript date string format
                            // https://www.w3schools.com/js/js_date_formats.asp
       },
@@ -43,11 +43,11 @@ csv2influx [--config path/to/config.json] data.csv    Loads config from path/to/
         "from": "name",
         "type": "string" // influxdb string target type
       },
-      "lat": { 
+      "lat": {
         "from": "lat",
         "type": "float" // influxdb float target type
       },
-      "lon": { 
+      "lon": {
         "from": "lng", // we use field "lng" from CSV to fill up field "lon" in DB
         "type": "float"
       },

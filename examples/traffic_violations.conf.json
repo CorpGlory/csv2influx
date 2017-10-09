@@ -1,10 +1,10 @@
 {
-  "measurementName": "traffic_violations",
-  "influxdbUrl": "http://127.0.0.1:8086/events",
+  "measurementName": "events",
+  "influxdbUrl": "http://127.0.0.1:8086/traffic_violations",
   "mapping": {
     "fieldSchema": {
       "time": {
-        "from": ["Date Of Stop", "Time Of Stop"], 
+        "from": ["Date Of Stop", "Time Of Stop"],
         "type": "timestamp",
         "format": "jsDate"
       },
@@ -19,6 +19,6 @@
     }
   },
   "csv": {
-    "delimiter": ";"
+    "delimiter": ","
   }
 }
