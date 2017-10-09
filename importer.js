@@ -3,6 +3,7 @@ const Influx = require('influxdb-nodejs');
 const fs = require('fs');
 const parse = require('csv-parse');
 const transform = require('stream-transform');
+const ProgressBar = require('progress');
 
 
 function parseValue(recordValue, mappingObject) {
@@ -40,6 +41,21 @@ function flatMappingToInfluxFieldSchema(mapping) {
   };
 }
 
+function countFileLines(filePath) {
+  return new Promise((resolve, reject) => {
+  let lineCount = 0;
+  let i = 0;
+  fs.createReadStream(filePath)
+    .on("data", (buffer) => {
+      for (i = 0; i < buffer.length; ++i) {
+        if (buffer[i] == 10) lineCount++;
+      }
+    }).on("end", () => {
+      resolve(lineCount);
+    }).on("error", reject);
+  });
+};
+
 class Importer {
 
   constructor(config) {
@@ -47,17 +63,45 @@ class Importer {
     this.client = undefined;
     this.fieldSchema = undefined;
     this.namesMapping = undefined;
+    this.isQuiteMode = false;
+    this.progressBar = undefined;
   }
 
-  run(inputFile) {
-
+  // TODO: it's better to move these params to constructor
+  //       and invode run without params
+  run(inputFile, isQuiteMode) {
     if(inputFile === undefined) {
       throw new Error('inputFile is undefined');
     }
-
+    
     if(!fs.existsSync(inputFile)) {
       console.error(inputFile + ' doesn`t exist. Can`t continue.');
       process.exit(errors.ERROR_BAD_CSV_FILE);
+    }
+    
+    this.inputFile = inputFile;
+    this.isQuiteMode = isQuiteMode;
+    if(isQuiteMode) {
+      return countFileLines(this.inputFile)
+        .then(linesCount => {
+          this.linesCount = linesCount;
+          return this._import();
+        })
+    } else {
+      // TODO: use reject when errors
+      // TODO: no more prosess.exit in this file
+      return new Promise((resolve, reject) => {
+        this._import();
+        resolve();
+      });
+    }
+  }
+  
+  _import() {
+  
+    if(this.isQuiteMode) {
+      console.log('lines count:' + this.linesCount);
+      this.progressBar = new ProgressBar(':current: % :bar ', { width: 100, total: this.linesCount });
     }
 
     console.log('Connecting to ' + this.config.influxdbUrl);
@@ -81,40 +125,43 @@ class Importer {
     });
 
     // callback for checking columns names in csv
-    this.config.csv.columns = (cols) => { 
+    this.config.csv.columns = (cols) => {
       Object.keys(this.fieldSchema).forEach(key => {
-        // if 'from' field is an array - checking each of items
-        if(Array.isArray(this.namesMapping[key])) { 
+        // if 'from' field is an array - checking each of them
+        if(Array.isArray(this.namesMapping[key])) {
           this.namesMapping[key].forEach(el => {
             if(cols.indexOf(el) < 0) {
-              console.error('Error: there is no column named "' + el + '" in ' + inputFile);
-              console.error('column names (current delimiter: "' + this.config.csv.delimiter + '"):');
-              cols.forEach((el, idx) => console.error((idx+1) + ': ' + el));
+              console.error('Error: there is no column named ' + el + ' in ' + this.inputFile);
+              console.error('column names: ' + cols);
               process.exit(errors.ERROR_BAD_CONFIG_FORMAT);
-            } 
+            }
           });
         } else if(cols.indexOf(this.namesMapping[key]) < 0) {
           // if key doesn't exist in cols array
-          console.error('Error: there is no column named "' + this.namesMapping[key] + '" in ' + inputFile);
-          console.error('column names (current delimiter: "' + this.config.csv.delimiter + '"):');
-          cols.forEach((el, idx) => console.error((idx+1) + ': ' + el));
+          console.error('Error: there is no column named ' + this.namesMapping[key] + ' in ' + this.inputFile);
+          console.error('column names: ' + cols);
           process.exit(errors.ERROR_BAD_CONFIG_FORMAT);
         }
       });
 
       // callback should return list of columns' names
-      return cols; 
+      return cols;
     };
 
     var parser = parse(this.config.csv);
-    var input = fs.createReadStream(inputFile);
+    var input = fs.createReadStream(this.inputFile);
 
     console.log('Importing');
-    
+
     var transformer = transform((record, callback) => {
       // TODO: add filter
-      this.writeRecordToInflux(record)
-        .then(() => callback(null, ''))
+      this._writeRecordToInflux(record)
+        .then(() => {
+          if(this.isQuiteMode) {
+            this.progressBar.tick();
+          }
+          callback(null, '');
+        })
         .catch(err => {
           console.error(err);
           console.error(JSON.stringify(err, null, 2));
@@ -128,7 +175,7 @@ class Importer {
       .pipe(process.stdout);
   }
 
-  writeRecordToInflux(record) {
+  _writeRecordToInflux(record) {
 
     var fieldObject = {
     };
@@ -155,17 +202,19 @@ class Importer {
       }
     });
 
-    console.log(fieldObject);
-
     var writer = this.client.write(this.config.measurementName)
       .tag({
         // TODO: add tags support
       })
       .field(fieldObject)
 
-    console.log('time: ' + time);
+    if(!this.isQuiteMode) {
+      console.log(fieldObject);
+      console.log('time: ' + time);
+    }
+
     writer.time(time);
-      
+
     return writer;
   }
 

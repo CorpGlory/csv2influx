@@ -26,6 +26,7 @@
   "dependencies": {
     "csv-parse": "^1.2.4",
     "influxdb-nodejs": "^2.7.4",
+    "progress": "^2.0.0",
     "stream-transform": "^0.1.2"
   }
 }
