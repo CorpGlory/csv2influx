@@ -92,13 +92,12 @@ class Importer {
               process.exit(errors.ERROR_BAD_CONFIG_FORMAT);
             } 
           });
+        } else if(cols.indexOf(this.namesMapping[key]) < 0) {
+          // if key doesn't exist in cols array
+          console.error('Error: there is no column named ' + this.namesMapping[key] + ' in ' + inputFile);
+          console.error('column names: ' + cols);
+          process.exit(errors.ERROR_BAD_CONFIG_FORMAT);
         }
-        // if key doesn't exist in cols array
-        else if(cols.indexOf(this.namesMapping[key]) < 0) {
-            console.error('Error: there is no column named ' + this.namesMapping[key] + ' in ' + inputFile);
-            console.error('column names: ' + cols);
-            process.exit(errors.ERROR_BAD_CONFIG_FORMAT);
-          } 
       });
 
       // callback should return list of columns' names

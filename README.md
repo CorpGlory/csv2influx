@@ -20,11 +20,9 @@ csv2influx [--config path/to/config.json] data.csv    Loads config from path/to/
                                                       Default path: ./csv2influx.conf.json
 ```
 
-See [example](example) for more details.
+## Config example
 
-## Config documentation
-
-```javascript
+```json
 
 {
   "influxdbUrl": "http://127.0.0.1:8086/INFLUXDB_URL", // Database has to exist
@@ -34,23 +32,22 @@ See [example](example) for more details.
       "date": { // timestamp will always be "time" in database
         "from": "date",
         "type": "timestamp",
-        "format": "jsDate" // field "format" is required for timestamp
+        "format": "jsDate" // field "format" is required for timestamp. 
+                           // in this case means that string will by parsed as 
+                           // JavaScript date string format
+                           // https://www.w3schools.com/js/js_date_formats.asp
       },
-      "lat": { // fields "from" and "type" are required
-        "from": "lat",
-        "type": "float"
-      },
-      "language": { 
-        "from": "lng", // we use field "lng" from CSV to fill up field "language" in DB
-        "type": "float"
-      },
-      "name": {
+      "name": { // fields "from" and "type" are required
         "from": "name",
-        "type": "string"
+        "type": "string" // influxdb string target type
       },
-      "descr": { // renaming field available: description -> descr
-        "from": "description", 
-        "type": "string"
+      "lat": { 
+        "from": "lat",
+        "type": "float" // influxdb float target type
+      },
+      "lon": { 
+        "from": "lng", // we use field "lng" from CSV to fill up field "lon" in DB
+        "type": "float"
       },
       "location": {
         "from": "location",
@@ -58,58 +55,13 @@ See [example](example) for more details.
       },
     },
   },
-  "csv": {
+  "csv": { // Parser options from http://csv.adaltas.com/parse/
     "delimiter": ','
   }
 }
 
 ```
 
-If you have date and time in separate fields in csv, like:
-```
-Date Of Stop,Time Of Stop, ...
-08/28/2017,23:41:00, ...
-```
+See more [examples](examples) for
 
-You need to point it out in "timestamp" field:
-```javascript
-
-{
-  "influxdbUrl": "http://127.0.0.1:8086/INFLUXDB_URL",
-  "measurementName": "MEASUREMENT_NAME",
-  "mapping": {
-    "fieldSchema": {
-      "date": {
-        "from": ["Date of Stop", "Time Of Stop"], // fields "Date of Stop" and "Time of Stop" will be concatenated to create timestamp
-        "type": "timestamp",
-        "format": "jsDate"
-      },
-      "lat": {
-        "from": "lat",
-        "type": "float"
-      },
-      "lng": {
-        "from": "lng",
-        "type": "float"
-      },
-      "name": {
-        "from": "name",
-        "type": "string"
-      },
-      "descr": {
-        "from": "description", 
-        "type": "string"
-      },
-      "location": {
-        "from": "location",
-        "type": "string"
-      },
-    },
-  },
-  "csv": {
-    "delimiter": ','
-  }
-}
-
-```
 
