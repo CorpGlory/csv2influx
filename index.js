@@ -18,23 +18,23 @@ switch(process.argv.length)
           process.exit(0);
         }
         else {
-            var conf = config.loadConfig();
-            var imp = new importer.Importer(conf);
-            // consider process.argv[2] as csv-filename
-            imp.run(process.argv[2]);
+          var conf = config.loadConfig();
+          var imp = new importer.Importer(conf);
+          // consider process.argv[2] as csv-filename
+          imp.run(process.argv[2]);
 
-            break;
+          break;
         }
 
     case 5:
         if(process.argv[2] === '--config') {
-            // consider process.argv[3] as config-filename
-            var conf = config.loadConfig(process.argv[3]);
-            var imp = new importer.Importer(conf);
-            // consider process.argv[4] as csv-filename
-            imp.run(process.argv[4]);
-            
-            break;
+          // consider process.argv[3] as config-filename
+          var conf = config.loadConfig(process.argv[3]);
+          var imp = new importer.Importer(conf);
+          // consider process.argv[4] as csv-filename
+          imp.run(process.argv[4]);
+          
+          break;
         }
 
     default:
