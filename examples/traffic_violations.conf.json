@@ -1,0 +1,24 @@
+{
+  "measurementName": "traffic_violations",
+  "influxdbUrl": "http://127.0.0.1:8086/events",
+  "mapping": {
+    "fieldSchema": {
+      "time": {
+        "from": ["Date of Stop", "Time Of Stop"], 
+        "type": "timestamp",
+        "format": "jsDate"
+      },
+      "agency": {
+        "from": "Agency",
+        "type": "string"
+      },
+      "description": {
+        "from": "Description",
+        "type": "string"
+      }
+    }
+  },
+  "csv": {
+    "delimiter": ";"
+  }
+}
