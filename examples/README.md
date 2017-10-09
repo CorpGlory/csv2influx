@@ -1,13 +1,14 @@
 # Air Quality
+Based on https://archive.ics.uci.edu/ml/datasets/Air+quality.
+First two columns merged to one.
 
 The folder contains [airQuality.csv](airQuality.csv) and [airQuality.conf.json](airQuality.conf.json) for it.
 Examples demonstrates how to take subset of all fields from csv file. Also `;` delimeter is used.
 
-Based on https://archive.ics.uci.edu/ml/datasets/Air+quality. 
-Dates merged manualy. See next example to learn how to merge Date/Time.
+See next example to learn how to merge Date/Time
 
 
-## Run
+### Run
 
 ```
 csv2influx --config aitQuality.conf.json aitQuality.csv
@@ -25,14 +26,15 @@ Date Of Stop,Time Of Stop, ...
 08/28/2017,23:41:00, ...
 ```
 
-You may point it out in "timestamp" field:
+You may marge fields `Date Of Stop` and `Time Of Stop` map to one `time` field:
+
 ```javascript
 
 {
   ...
   "mapping": {
     "fieldSchema": {
-      "date": {
+      "time": {
         // fields "Date of Stop" and "Time of Stop" will be concatenated to create timestamp
         "from": ["Date of Stop", "Time Of Stop"], 
         "type": "timestamp",
@@ -43,7 +45,7 @@ You may point it out in "timestamp" field:
 
 ```
 
-## Run
+### Run
 
 ```
 csv2influx --config traffic_violations.conf.json traffic_violations.csv

@@ -1,7 +1,8 @@
 # csv2influx
 
 A tool for converting csv file to influxdb database.
-You map csv fields to influxdb columns in config file.
+You can map csv fields to influxdb columns in config file.
+See [examples](examples)
 
 https://github.com/CorpGlory/csv2influx
 

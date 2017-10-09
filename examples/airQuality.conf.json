@@ -3,7 +3,7 @@
   "influxdbUrl": "http://127.0.0.1:8086/air_metrics",
   "mapping": {
     "fieldSchema": {
-      "Date": {
+      "time": {
         "from": "Date",
         "type": "timestamp",
         "format": "jsDate"
@@ -12,7 +12,7 @@
         "from": "PT08.S1(CO)",
         "type": "float"
       },
-      "PT08.S2": {
+      "PT08.S2(NMHC)": {
         "from": "PT08.S2(NMHC)",
         "type": "float"
       }
