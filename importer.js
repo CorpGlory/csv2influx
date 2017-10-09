@@ -49,7 +49,7 @@ class Importer {
     this.namesMapping = undefined;
   }
 
-  run(inputFile) {
+  run(inputFile, isQuiteMode) {
 
     if(inputFile === undefined) {
       throw new Error('inputFile is undefined');

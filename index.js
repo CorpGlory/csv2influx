@@ -32,8 +32,8 @@ switch(process.argv.length)
             var conf = config.loadConfig(process.argv[3]);
             var imp = new importer.Importer(conf);
             // consider process.argv[4] as csv-filename
-            imp.run(process.argv[4]);
-            
+            isQuiet = process.argv.indexOf('-q') >= 0;
+            imp.run(process.argv[4], isQuiet);
             break;
         }
 
