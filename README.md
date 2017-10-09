@@ -5,8 +5,6 @@ You can map csv fields to influxdb columns in config file.
 
 See [examples](examples)
 
-https://github.com/CorpGlory/csv2influx
-
 ## Install
 
 ```
