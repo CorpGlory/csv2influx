@@ -83,19 +83,21 @@ class Importer {
     // callback for checking columns names in csv
     this.config.csv.columns = (cols) => { 
       Object.keys(this.fieldSchema).forEach(key => {
-        // if 'from' field is an array - checking each of them
+        // if 'from' field is an array - checking each of items
         if(Array.isArray(this.namesMapping[key])) { 
           this.namesMapping[key].forEach(el => {
             if(cols.indexOf(el) < 0) {
-              console.error('Error: there is no column named ' + el + ' in ' + inputFile);
-              console.error('column names: ' + cols);
+              console.error('Error: there is no column named "' + el + '" in ' + inputFile);
+              console.error('column names (current delimiter: "' + this.config.csv.delimiter + '"):');
+              cols.forEach((el, idx) => console.error((idx+1) + ': ' + el));
               process.exit(errors.ERROR_BAD_CONFIG_FORMAT);
             } 
           });
         } else if(cols.indexOf(this.namesMapping[key]) < 0) {
           // if key doesn't exist in cols array
-          console.error('Error: there is no column named ' + this.namesMapping[key] + ' in ' + inputFile);
-          console.error('column names: ' + cols);
+          console.error('Error: there is no column named "' + this.namesMapping[key] + '" in ' + inputFile);
+          console.error('column names (current delimiter: "' + this.config.csv.delimiter + '"):');
+          cols.forEach((el, idx) => console.error((idx+1) + ': ' + el));
           process.exit(errors.ERROR_BAD_CONFIG_FORMAT);
         }
       });
