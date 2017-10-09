@@ -25,15 +25,17 @@ switch(process.argv.length)
 
             break;
         }
-
+        
     case 5:
+    case 6:
         if(process.argv[2] === '--config') {
             // consider process.argv[3] as config-filename
             var conf = config.loadConfig(process.argv[3]);
             var imp = new importer.Importer(conf);
             // consider process.argv[4] as csv-filename
             isQuiet = process.argv.indexOf('-q') >= 0;
-            imp.run(process.argv[4], isQuiet);
+            imp.run(process.argv[4], isQuiet)
+                .then(() => console.log(''));
             break;
         }
 
