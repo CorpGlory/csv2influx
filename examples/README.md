@@ -26,7 +26,7 @@ Date Of Stop,Time Of Stop, ...
 ```
 
 You may point it out in "timestamp" field:
-```json
+```javascript
 
 {
   ...
@@ -46,5 +46,5 @@ You may point it out in "timestamp" field:
 ## Run
 
 ```
-csv2influx --config aitQuality.conf.json aitQuality.csv
+csv2influx --config traffic_violations.conf.json traffic_violations.csv
 ```

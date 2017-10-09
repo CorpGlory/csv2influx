@@ -22,7 +22,7 @@ csv2influx [--config path/to/config.json] data.csv    Loads config from path/to/
 
 ## Config example
 
-```json
+```javascript
 
 {
   "influxdbUrl": "http://127.0.0.1:8086/INFLUXDB_URL", // Database has to exist
@@ -62,6 +62,6 @@ csv2influx [--config path/to/config.json] data.csv    Loads config from path/to/
 
 ```
 
-See more [examples](examples) for
+See more [examples](examples) to learn more about mapping
 
 
