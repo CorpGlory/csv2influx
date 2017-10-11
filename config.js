@@ -107,5 +107,9 @@ function loadConfig(config_file_name) {
 
 module.exports = {
   initConfig,
-  loadConfig
+  loadConfig,
+  
+  // only for testing
+  
+  _checkConfigObject
 }
