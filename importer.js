@@ -130,8 +130,7 @@ class Importer {
         // if 'from' field is an array - checking each of them
         if(Array.isArray(this.namesMapping[key])) {
           this.namesMapping[key].forEach(el => this._checkColInCols(el, cols));
-        }
-        else {
+        } else {
           this._checkColInCols(this.namesMapping[key], cols);
         }
       });
