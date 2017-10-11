@@ -18,13 +18,12 @@ switch(process.argv.length)
           process.exit(0);
         }
         else {
-            var conf = config.loadConfig();
-            var imp = new importer.Importer(conf);
-            isQuiet = process.argv.indexOf('-q') >= 0;
-            // consider process.argv[2] as csv-filename
-            imp.run(process.argv[2], isQuiet);
-
-            break;
+          var conf = config.loadConfig();
+          var imp = new importer.Importer(conf);
+          isQuiet = process.argv.indexOf('-q') >= 0;
+          // consider process.argv[2] as csv-filename
+          imp.run(process.argv[2], isQuiet);
+          break;
         }
         
     case 5:
