@@ -228,5 +228,8 @@ class Importer {
 }
 
 module.exports = {
-  Importer
+  Importer,
+  
+  // for testing
+  parseValue
 }

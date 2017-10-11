@@ -6,6 +6,9 @@
   "bin": {
     "csv2influx": "index.js"
   },
+  "scripts": {
+    "test": "mocha --reporter spec"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/CorpGlory/csv2influx.git"
@@ -28,5 +31,9 @@
     "influxdb-nodejs": "^2.7.4",
     "progress": "^2.0.0",
     "stream-transform": "^0.1.2"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "mocha": "^4.0.1"
   }
 }
