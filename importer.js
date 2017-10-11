@@ -144,8 +144,10 @@ class Importer {
     var input = fs.createReadStream(this.inputFile);
 
     console.log('Importing');
+    var num = 0;
 
     var transformer = transform((record, callback) => {
+      num++;
       // TODO: add filter
       this._writeRecordToInflux(record)
         .then(() => {
@@ -155,9 +157,15 @@ class Importer {
           callback(null, '');
         })
         .catch(err => {
+          console.error('\n [' + num + '] BAD_WRITE');
+          console.error(record);
           console.error(err);
           console.error(JSON.stringify(err, null, 2));
-          process.exit(errors.ERROR_BAD_WRITE);
+          if(this.isQuiteMode) {
+            this.progressBar.tick();
+          }
+          //process.exit(errors.ERROR_BAD_WRITE);
+          callback(null, '');
         });
     }, { parallel: 1 });
 
@@ -182,14 +190,11 @@ class Importer {
           this.namesMapping[key].forEach(
             el => timestamp.push(record[el])
           );
-
           time = parseValue(timestamp, this.config.mapping.fieldSchema[key]);
-        }
-        else {
+        } else {
           time = parseValue(record[this.namesMapping[key]], this.config.mapping.fieldSchema[key]);
         }
-      }
-      else {
+      } else {
         fieldObject[key] = parseValue(record[this.namesMapping[key]], this.config.mapping.fieldSchema[key]);
       }
     });
