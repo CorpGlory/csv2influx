@@ -16,12 +16,10 @@ function parseValue(recordValue, mappingObject) {
   return recordValue;
 }
 
-function flatMappingToInfluxFieldSchema(mapping) {
-  var res = {};
+function flatSchema(schema) {
+  var flatSchema = {};
   var namesMapping = {};
-  var schema = mapping.fieldSchema;
-
-  Object.keys(schema).forEach(key => {
+  for(var key in schema) {
     if(schema[key].type === undefined) {
       console.error('mapping.fieldSchema[' + key + '].type is undefined');
       process.exit(errors.ERROR_BAD_CONFIG_FORMAT);
@@ -30,15 +28,13 @@ function flatMappingToInfluxFieldSchema(mapping) {
       console.error('mapping.fieldSchema[' + key + '].from is undefined');
       process.exit(errors.ERROR_BAD_CONFIG_FORMAT);
     }
-
     res[key] = schema[key].type;
     namesMapping[key] = schema[key].from;
-  });
-
+  }
   return {
-    fieldSchema: res,
-    namesMapping
-  };
+    schema: flatSchema,
+    namesMapping: namesMapping
+  }
 }
 
 function countFileLines(filePath) {
@@ -61,8 +57,10 @@ class Importer {
   constructor(config) {
     this.config = config;
     this.client = undefined;
-    this.fieldSchema = undefined;
-    this.namesMapping = undefined;
+    this.fieldsSchema = undefined;
+    this.tagSchema = undefined;
+    this.fieldsNamesMapping = undefined;
+    this.tagsNamesMapping = undefined;
     this.isQuiteMode = false;
     this.progressBar = undefined;
   }
@@ -113,26 +111,28 @@ class Importer {
     this.client = client;
     console.log('Schema: ' + this.config.measurementName);
 
-    const TAG_SCHEMA = {};
-    var flatMap = flatMappingToInfluxFieldSchema(this.config.mapping);
+    
+    var fieldsFlatMap = flatMappingToInfluxSchemas(this.config.mapping.fieldSchema);
+    var tagsFlatMap = flatMappingToInfluxSchemas(this.config.mapping);
 
-    this.fieldSchema = flatMap.fieldSchema;
-    this.namesMapping = flatMap.namesMapping;
+    this.fieldsSchema = fieldsFlatMap.fieldsSchema;
+    this.fieldsNamesMapping = fieldsFlatMap.namesMapping;
+    this.tagSchema = fieldsFlatMap.tagSchema;
+    this.tagsNamesMapping = fieldsFlatMap.tagSchema;
 
-    client.schema(this.config.measurementName, this.fieldSchema, TAG_SCHEMA, {
+    client.schema(this.config.measurementName, this.fieldsSchema, TAG_SCHEMA, {
       // default is false
       stripUnknown: true,
     });
 
     // callback for checking columns names in csv
     this.config.csv.columns = (cols) => {
-      Object.keys(this.fieldSchema).forEach(key => {
+      Object.keys(this.fieldsSchema).forEach(key => {
         // if 'from' field is an array - checking each of them
-        if(Array.isArray(this.namesMapping[key])) {
-          this.namesMapping[key].forEach(el => this._checkColInCols(el, cols));
-        }
-        else {
-          this._checkColInCols(this.namesMapping[key], cols);
+        if(Array.isArray(this.fieldsNamesMapping[key])) {
+          this.fieldsNamesMapping[key].forEach(el => this._checkColInCols(el, cols));
+        } else {
+          this._checkColInCols(this.fieldsNamesMapping[key], cols);
         }
       });
 
@@ -177,32 +177,31 @@ class Importer {
 
   _writeRecordToInflux(record) {
 
-    var fieldObject = {
-    };
+    var fieldObject = {};
+    var tagObject = {};
 
     var time;
-    var schema = this.fieldSchema;
+    var fieldsSchema = this.fieldsSchema;
 
-    Object.keys(schema).forEach(key => {
-      if(schema[key] === 'timestamp') {
-        if(Array.isArray(this.namesMapping[key])) {
+
+    Object.keys(fieldsSchema).forEach(key => {
+      if(fieldsSchema[key] === 'timestamp') {
+        if(Array.isArray(this.fieldsNamesMapping[key])) {
           var timestamp = [];
-          this.namesMapping[key].forEach(
+          this.fieldsNamesMapping[key].forEach(
             el => timestamp.push(record[el])
           );
           time = parseValue(timestamp, this.config.mapping.fieldSchema[key]);
         } else {
-          time = parseValue(record[this.namesMapping[key]], this.config.mapping.fieldSchema[key]);
+          time = parseValue(record[this.fieldsNamesMapping[key]], this.config.mapping.fieldSchema[key]);
         }
       } else {
-        fieldObject[key] = parseValue(record[this.namesMapping[key]], this.config.mapping.fieldSchema[key]);
+        fieldObject[key] = parseValue(record[this.fieldsNamesMapping[key]], this.config.mapping.fieldSchema[key]);
       }
     });
 
     var writer = this.client.write(this.config.measurementName)
-      .tag({
-        // TODO: add tags support
-      })
+      .tag(tagObject)
       .field(fieldObject)
 
     if(!this.isQuiteMode) {
@@ -231,5 +230,6 @@ module.exports = {
   Importer,
   
   // for testing
-  parseValue
+  parseValue,
+  flatSchema
 }
