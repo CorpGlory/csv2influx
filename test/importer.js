@@ -10,4 +10,36 @@ describe("Importer", function() {
       expect(parsedValue).to.not.be.equal(1380031860000000000);
     });
   });
+  
+  describe("flatSchema", function() {
+    var mapping = {
+      fieldSchema: {
+        date: {
+          from: 'date',
+          type: 'timestamp',
+          format: 'jsDate'
+        }
+      },
+      tagsSchema: {
+        name: {
+          from: 'name',
+          type: 'string'
+        }
+      }
+    };
+    
+    it("Returns empty mappings on undefined", function() {
+      var vpr = importer.flatSchema(undefined);
+      expect(vpr.schema).to.not.be.undefined();
+      expect(vpr.namesMapping).to.not.be.undefined();
+    });
+    
+    it("Parses tagsSchema", function() {
+      var vpr = importer.flatSchema(mapping.tagsSchema);
+      expect(vpr.schema).to.not.be.undefined('No schema in result');
+    });
+
+    // TODO: write test
+    
+  });
 });
