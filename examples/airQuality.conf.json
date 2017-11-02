@@ -2,12 +2,12 @@
   "measurementName": "air_quality",
   "influxdbUrl": "http://127.0.0.1:8086/air_metrics",
   "mapping": {
+    "time": {
+      "from": "Date",
+      "type": "timestamp",
+      "format": "jsDate"
+    },
     "fieldSchema": {
-      "time": {
-        "from": "Date",
-        "type": "timestamp",
-        "format": "jsDate"
-      },
       "PT08.S1(CO)": {
         "from": "PT08.S1(CO)",
         "type": "float"

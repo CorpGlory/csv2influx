@@ -7,12 +7,11 @@ const ProgressBar = require('progress');
 
 
 function parseValue(recordValue, mappingObject) {
-  if(mappingObject.type === 'timestamp') {
-    if(mappingObject.format === 'jsDate') {
-      // convert millisconds to nanoseconds
-      return (new Date(recordValue).getTime()) * 1000 * 1000;
-    }
+  if(mappingObject.format === 'jsDate') {
+    // convert millisconds to nanoseconds
+    return (new Date(recordValue).getTime()) * 1000 * 1000;
   }
+
   return recordValue;
 }
 
@@ -113,14 +112,14 @@ class Importer {
     this.client = client;
     console.log('Schema: ' + this.config.measurementName);
 
-    
     var fieldsFlatMap = flatSchema(this.config.mapping.fieldSchema);
     var tagsFlatMap = flatSchema(this.config.mapping.tagSchema);
 
+    this.timeObject = this.config.mapping.time;
     this.fieldSchema = fieldsFlatMap.schema;
     this.fieldsNamesMapping = fieldsFlatMap.namesMapping;
-    this.tagSchema = fieldsFlatMap.schema;
-    this.tagsNamesMapping = fieldsFlatMap.tagSchema;
+    this.tagSchema = tagsFlatMap.schema;
+    this.tagsNamesMapping = tagsFlatMap.namesMapping;
 
     client.schema(this.config.measurementName, this.fieldSchema, this.tagSchema, {
       // default is false
@@ -183,25 +182,23 @@ class Importer {
     var fieldObject = {};
     var tagObject = {};
 
-    var time;
     var fieldSchema = this.fieldSchema;
 
+    var time = undefined;
+
+    if(Array.isArray(this.timeObject.from)) {
+      var timestamp = [];
+      this.timeObject['from'].forEach(
+        el => timestamp.push(record[el])
+      );
+      time = parseValue(timestamp, this.timeObject);
+    } else {
+      time = parseValue(record[this.timeObject.from], this.timeObject);
+    }
 
     for(var key in fieldSchema) {
-      if(fieldSchema[key] === 'timestamp') {
-        if(Array.isArray(this.fieldsNamesMapping[key])) {
-          var timestamp = [];
-          this.fieldsNamesMapping[key].forEach(
-            el => timestamp.push(record[el])
-          );
-          time = parseValue(timestamp, this.config.mapping.fieldSchema[key]);
-        } else {
-          time = parseValue(record[this.fieldsNamesMapping[key]], this.config.mapping.fieldSchema[key]);
-        }
-      } else {
-        fieldObject[key] = parseValue(record[this.fieldsNamesMapping[key]], this.config.mapping.fieldSchema[key]);
-      }
-    };
+        fieldObject[key] = record[this.fieldsNamesMapping[key]];
+    }
 
     var writer = this.client.write(this.config.measurementName)
       .tag(tagObject)
