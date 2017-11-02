@@ -43,8 +43,10 @@ function countFileLines(filePath) {
   let i = 0;
   fs.createReadStream(filePath)
     .on("data", (buffer) => {
-      for (i = 0; i < buffer.length; ++i) {
-        if (buffer[i] == 10) lineCount++;
+      for(i = 0; i < buffer.length; ++i) {
+        if(buffer[i] == 10) {
+          lineCount++;
+        }
       }
     }).on("end", () => {
       resolve(lineCount);
@@ -57,7 +59,7 @@ class Importer {
   constructor(config) {
     this.config = config;
     this.client = undefined;
-    this.fieldsSchema = undefined;
+    this.fieldSchema = undefined;
     this.tagSchema = undefined;
     this.fieldsNamesMapping = undefined;
     this.tagsNamesMapping = undefined;
@@ -113,28 +115,29 @@ class Importer {
 
     
     var fieldsFlatMap = flatSchema(this.config.mapping.fieldSchema);
-    var tagsFlatMap = flatSchema(this.config.mapping);
+    var tagsFlatMap = flatSchema(this.config.mapping.tagSchema);
 
-    this.fieldsSchema = fieldsFlatMap.fieldsSchema;
+    this.fieldSchema = fieldsFlatMap.schema;
     this.fieldsNamesMapping = fieldsFlatMap.namesMapping;
-    this.tagSchema = fieldsFlatMap.tagSchema;
+    this.tagSchema = fieldsFlatMap.schema;
     this.tagsNamesMapping = fieldsFlatMap.tagSchema;
 
-    client.schema(this.config.measurementName, this.fieldsSchema, TAG_SCHEMA, {
+    client.schema(this.config.measurementName, this.fieldSchema, this.tagSchema, {
       // default is false
       stripUnknown: true,
     });
 
     // callback for checking columns names in csv
+
     this.config.csv.columns = (cols) => {
-      Object.keys(this.fieldsSchema).forEach(key => {
-        // if 'from' field is an array - checking each of them
+      for(var key in this.fieldSchema) {
+        // if 'from' field is an array - checking each of array items
         if(Array.isArray(this.fieldsNamesMapping[key])) {
           this.fieldsNamesMapping[key].forEach(el => this._checkColInCols(el, cols));
         } else {
           this._checkColInCols(this.fieldsNamesMapping[key], cols);
         }
-      });
+      };
 
       // callback should return list of columns' names
       return cols;
@@ -181,11 +184,11 @@ class Importer {
     var tagObject = {};
 
     var time;
-    var fieldsSchema = this.fieldsSchema;
+    var fieldSchema = this.fieldSchema;
 
 
-    Object.keys(fieldsSchema).forEach(key => {
-      if(fieldsSchema[key] === 'timestamp') {
+    for(var key in fieldSchema) {
+      if(fieldSchema[key] === 'timestamp') {
         if(Array.isArray(this.fieldsNamesMapping[key])) {
           var timestamp = [];
           this.fieldsNamesMapping[key].forEach(
@@ -198,7 +201,7 @@ class Importer {
       } else {
         fieldObject[key] = parseValue(record[this.fieldsNamesMapping[key]], this.config.mapping.fieldSchema[key]);
       }
-    });
+    };
 
     var writer = this.client.write(this.config.measurementName)
       .tag(tagObject)
