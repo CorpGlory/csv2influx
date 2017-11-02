@@ -62,15 +62,15 @@ function _checkConfigObject(confObj) {
   
   var timestamp = false;
   var format = false;
-  Object.keys(confObj.mapping.fieldSchema).forEach(key => {
+  for(var key in confObj.mapping.fieldSchema) {
     if(confObj.mapping.fieldSchema[key].type === 'timestamp') {
       timestamp = true;
-      if(typeof confObj.mapping.fieldSchema[key].format !== 'undefined') {
+      if(confObj.mapping.fieldSchema[key].format !== undefined) {
         format = true;
       }
       return;
     }
-  });
+  };
 
   if(!timestamp) {
     return 'no timestamp field';
