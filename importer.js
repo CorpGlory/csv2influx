@@ -28,7 +28,7 @@ function flatSchema(schema) {
       console.error('mapping.fieldSchema[' + key + '].from is undefined');
       process.exit(errors.ERROR_BAD_CONFIG_FORMAT);
     }
-    res[key] = schema[key].type;
+    flatSchema[key] = schema[key].type;
     namesMapping[key] = schema[key].from;
   }
   return {
