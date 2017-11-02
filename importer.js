@@ -185,7 +185,7 @@ class Importer {
 
     var time;
     var fieldSchema = this.fieldSchema;
-
+    var tagSchema = this.tagSchema;
 
     for(var key in fieldSchema) {
       if(fieldSchema[key] === 'timestamp') {
@@ -199,8 +199,12 @@ class Importer {
           time = parseValue(record[this.fieldsNamesMapping[key]], this.config.mapping.fieldSchema[key]);
         }
       } else {
-        fieldObject[key] = parseValue(record[this.fieldsNamesMapping[key]], this.config.mapping.fieldSchema[key]);
+        fieldObject[key] = record[this.fieldsNamesMapping[key]];
       }
+    };
+
+    for(var key in tagSchema) {
+        tagObject[key] = record[this.tagsNamesMapping[key]];
     };
 
     var writer = this.client.write(this.config.measurementName)

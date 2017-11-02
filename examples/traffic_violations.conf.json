@@ -8,12 +8,14 @@
         "type": "timestamp",
         "format": "jsDate"
       },
-      "agency": {
-        "from": "Agency",
-        "type": "string"
-      },
       "description": {
         "from": "Description",
+        "type": "string"
+      }
+    },
+    "tagSchema": {
+      "agency": {
+        "from": "Agency",
         "type": "string"
       }
     }
