@@ -28,7 +28,7 @@ function flatSchema(schema) {
       console.error('mapping.fieldSchema[' + key + '].from is undefined');
       process.exit(errors.ERROR_BAD_CONFIG_FORMAT);
     }
-    res[key] = schema[key].type;
+    flatSchema[key] = schema[key].type;
     namesMapping[key] = schema[key].from;
   }
   return {
@@ -112,8 +112,8 @@ class Importer {
     console.log('Schema: ' + this.config.measurementName);
 
     
-    var fieldsFlatMap = flatMappingToInfluxSchemas(this.config.mapping.fieldSchema);
-    var tagsFlatMap = flatMappingToInfluxSchemas(this.config.mapping);
+    var fieldsFlatMap = flatSchema(this.config.mapping.fieldSchema);
+    var tagsFlatMap = flatSchema(this.config.mapping);
 
     this.fieldsSchema = fieldsFlatMap.fieldsSchema;
     this.fieldsNamesMapping = fieldsFlatMap.namesMapping;
