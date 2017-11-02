@@ -13,11 +13,15 @@ describe("Importer", function() {
   
   describe("flatSchema", function() {
     var mapping = {
+      time: {
+        from: 'date',
+        type: 'timestamp',
+        format: 'jsDate'
+      },
       fieldSchema: {
-        date: {
-          from: 'date',
-          type: 'timestamp',
-          format: 'jsDate'
+        description: {
+          from: 'description',
+          type: 'string'
         }
       },
       tagsSchema: {

@@ -33,13 +33,17 @@ You may marge fields `Date Of Stop` and `Time Of Stop` map to one `time` field:
 {
   ...
   "mapping": {
+    "time": {
+      // fields "Date of Stop" and "Time of Stop" will be concatenated to create timestamp
+      "from": ["Date of Stop", "Time Of Stop"], 
+      "type": "timestamp",
+      "format": "jsDate"
+    }
     "fieldSchema": {
-      "time": {
-        // fields "Date of Stop" and "Time of Stop" will be concatenated to create timestamp
-        "from": ["Date of Stop", "Time Of Stop"], 
-        "type": "timestamp",
-        "format": "jsDate"
-      },
+      "someFieldInInflux": {
+        "from": "SomeFieldInCSV",
+        "type": "string"
+      }
   ...
 }
 
