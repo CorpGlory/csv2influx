@@ -20,7 +20,7 @@
     "tagSchema": {
       "PT08.S2(NMHC)": {
         "from": "PT08.S2(NMHC)",
-        "type": "float"
+        "type": "*"
       }
     }
   },

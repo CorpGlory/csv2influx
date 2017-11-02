@@ -136,7 +136,7 @@ class Importer {
         } else {
           this._checkColInCols(this.fieldsNamesMapping[key], cols);
         }
-      };
+      }
 
       // callback should return list of columns' names
       return cols;
@@ -179,10 +179,8 @@ class Importer {
 
   _writeRecordToInflux(record) {
 
-    var fieldObject = {};
-    var tagObject = {};
-
-    var fieldSchema = this.fieldSchema;
+    var fieldObject = this._convertSchemaToObject(this.fieldSchema, this.fieldsNamesMapping, record);
+    var tagObject = this._convertSchemaToObject(this.tagSchema, this.tagsNamesMapping, record);
 
     var time = undefined;
 
@@ -196,21 +194,14 @@ class Importer {
       time = parseValue(record[this.timeObject.from], this.timeObject);
     }
 
-    for(var key in fieldSchema) {
-        fieldObject[key] = record[this.fieldsNamesMapping[key]];
-    }
-
-    for(var key in tagSchema) {
-        tagObject[key] = record[this.tagsNamesMapping[key]];
-    };
-
     var writer = this.client.write(this.config.measurementName)
       .tag(tagObject)
       .field(fieldObject)
 
     if(!this.isQuiteMode) {
-      console.log(fieldObject);
-      console.log('time: ' + time);
+      console.log('Fields: ' + JSON.stringify(fieldObject));
+      console.log('Tags: ' + JSON.stringify(tagObject));
+      console.log('Time: ' + time);
     }
 
     writer.time(time);
@@ -228,6 +219,15 @@ class Importer {
     }
   }
 
+  _convertSchemaToObject(schema, namesMapping, record) {
+    var obj = {};
+
+    for(var key in schema) {
+        obj[key] = record[namesMapping[key]];
+    }
+
+    return obj;
+  }
 }
 
 module.exports = {

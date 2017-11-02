@@ -50,12 +50,15 @@ Options:
       "longitude": {
         "from": "lng", // we use field "lng" from CSV to fill up field "longitude" in DB
         "type": "float"
-      },
+      }
+    },
+    "tagSchema": {
       "location": {
         "from": "location",
-        "type": "string"
-      },
-    },
+        "type": "*" // type of tag can be "*" (any value) or array of possible values
+                    // see https://vicanso.github.io/influxdb-nodejs/Client.html#schema
+      }
+    }
   },
   "csv": { // Parser options from http://csv.adaltas.com/parse/
     "delimiter": ','

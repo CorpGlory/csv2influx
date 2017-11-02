@@ -38,12 +38,19 @@ You may marge fields `Date Of Stop` and `Time Of Stop` map to one `time` field:
       "from": ["Date of Stop", "Time Of Stop"], 
       "type": "timestamp",
       "format": "jsDate"
-    }
+    },
     "fieldSchema": {
       "someFieldInInflux": {
         "from": "SomeFieldInCSV",
         "type": "string"
       }
+    },
+    "tagSchema": {
+      "someTagInInflux": {
+        "from": "SomeOtherFieldInCSV",
+        "type": "*"
+      }
+    }
   ...
 }
 
