@@ -7,12 +7,12 @@ var config = {
   influxdbUrl: 'http://127.0.0.1:8086/INFLUXDB_URL',
   measurementName: 'MEASUREMENT_NAME',
   mapping: {
+    time: {
+      from: 'date',
+      type: 'timestamp',
+      format: 'jsDate'
+    },
     fieldSchema: {
-      date: {
-        from: 'date',
-        type: 'timestamp',
-        format: 'jsDate'
-      },
       lat: {
         from: 'lat',
         type: 'float'
@@ -54,30 +54,16 @@ function _checkConfigObject(confObj) {
     return 'no influxdbUrl field';
   }
   if(!confObj.mapping) {
-    return 'no mapping';
+    return 'no mapping field';
+  }
+  if(!confObj.mapping.time) {
+    return 'no time field';
+  }
+  if(!confObj.mapping.time.format) {
+    return 'no format specified for time'
   }
   if(!confObj.mapping.fieldSchema) {
-    return 'mapping.fieldSchema';
-  }
-  
-  var timestamp = false;
-  var format = false;
-  Object.keys(confObj.mapping.fieldSchema).forEach(key => {
-    if(confObj.mapping.fieldSchema[key].type === 'timestamp') {
-      timestamp = true;
-      if(typeof confObj.mapping.fieldSchema[key].format !== 'undefined') {
-        format = true;
-      }
-      return;
-    }
-  });
-
-  if(!timestamp) {
-    return 'no timestamp field';
-  }
-
-  if(!format) {
-    return 'no format specified at timestamp field'
+    return 'no fieldSchema specified';
   }
 
   return undefined;

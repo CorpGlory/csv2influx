@@ -1,6 +1,6 @@
 {
   "name": "csv2influx",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "Tool for importing data from csv file to influxdb",
   "main": "index.js",
   "bin": {
@@ -29,8 +29,7 @@
   "dependencies": {
     "csv-parse": "^1.2.4",
     "influxdb-nodejs": "^2.7.4",
-    "progress": "^2.0.0",
-    "stream-transform": "^0.1.2"
+    "progress": "^2.0.0"
   },
   "devDependencies": {
     "chai": "^4.1.2",

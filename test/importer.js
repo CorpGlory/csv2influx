@@ -5,38 +5,54 @@ describe("Importer", function() {
   describe("parseValue", function() {
     it("Parses datetes to nanoseconds", function() {
       var parsedValue = importer.parseValue(
-        '09/24/2013 17:11:00', { type: "timestamp", formt: "jsDate" }
+        '09/24/2013 17:11:00', { type: "timestamp", format: "jsDate" }
       );
-      expect(parsedValue).to.not.be.equal(1380031860000000000);
+      expect(parsedValue).to.equal(1380031860000000000);
     });
   });
   
   describe("flatSchema", function() {
     var mapping = {
+      time: {
+        from: 'date',
+        type: 'timestamp',
+        format: 'jsDate'
+      },
       fieldSchema: {
-        date: {
-          from: 'date',
-          type: 'timestamp',
-          format: 'jsDate'
+        description: {
+          from: 'description',
+          type: 'string'
         }
       },
       tagsSchema: {
         name: {
           from: 'name',
-          type: 'string'
+          type: '*'
+        },
+        type: {
+          from: 'type',
+          type: ['1', '2', '3']
         }
       }
     };
     
     it("Returns empty mappings on undefined", function() {
       var vpr = importer.flatSchema(undefined);
-      expect(vpr.schema).to.not.be.undefined();
-      expect(vpr.namesMapping).to.not.be.undefined();
+      expect(vpr.schema).to.deep.equal({});
+      expect(vpr.namesMapping).to.deep.equal({});
     });
-    
-    it("Parses tagsSchema", function() {
-      var vpr = importer.flatSchema(mapping.tagsSchema);
-      expect(vpr.schema).to.not.be.undefined('No schema in result');
+
+    it("Parses schema", function() {
+      var vpr = importer.flatSchema(mapping.fieldSchema);
+      expect(vpr.schema).to.deep.equal({
+        'description': 'string'
+      });
+
+      vpr = importer.flatSchema(mapping.tagsSchema);
+      expect(vpr.schema).to.deep.equal({
+        'name': '*',
+        'type': ['1', '2', '3']
+      });
     });
 
     // TODO: write test
