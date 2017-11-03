@@ -53,6 +53,16 @@ function countFileLines(filePath) {
   });
 };
 
+function convertSchemaToObject(schema, namesMapping, record) {
+  var obj = {};
+
+  for (var key in schema) {
+    obj[key] = record[namesMapping[key]];
+  }
+
+  return obj;
+}
+
 class Importer {
 
   constructor(config) {
@@ -179,8 +189,8 @@ class Importer {
 
   _writeRecordToInflux(record) {
 
-    var fieldObject = this._convertSchemaToObject(this.fieldSchema, this.fieldsNamesMapping, record);
-    var tagObject = this._convertSchemaToObject(this.tagSchema, this.tagsNamesMapping, record);
+    var fieldObject = convertSchemaToObject(this.fieldSchema, this.fieldsNamesMapping, record);
+    var tagObject = convertSchemaToObject(this.tagSchema, this.tagsNamesMapping, record);
 
     var time = undefined;
 
@@ -218,16 +228,6 @@ class Importer {
       process.exit(errors.ERROR_BAD_CONFIG_FORMAT);
     }
   }
-
-  _convertSchemaToObject(schema, namesMapping, record) {
-    var obj = {};
-
-    for(var key in schema) {
-      obj[key] = record[namesMapping[key]];
-    }
-
-    return obj;
-  }
 }
 
 module.exports = {
@@ -235,5 +235,6 @@ module.exports = {
   
   // for testing
   parseValue,
-  flatSchema
+  flatSchema,
+  convertSchemaToObject
 }
