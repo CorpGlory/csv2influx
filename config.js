@@ -54,10 +54,10 @@ function _checkConfigObject(confObj) {
     return 'no influxdbUrl field';
   }
   if(!confObj.mapping) {
-    return 'no mapping';
+    return 'no mapping field';
   }
   if(!confObj.mapping.time) {
-    return 'time field is missing';
+    return 'no time field';
   }
   if(!confObj.mapping.time.format) {
     return 'no format specified for time'
