@@ -26,7 +26,22 @@ Date Of Stop,Time Of Stop, ...
 08/28/2017,23:41:00, ...
 ```
 
-You can merge fields `Date Of Stop` and `Time Of Stop` map to one `time` field:
+You can merge fields `Date Of Stop` and `Time Of Stop` map to one `time` field.
+
+Also, you can merge any field or tag using template-string-like syntax. 
+"Imagine a csv has Street,City,State,Zip, you may want to merge those as "Street\nCity,State\nZip" (c) https://github.com/CorpGlory/csv2influx/issues/28#issuecomment-335570628
+
+Example:
+
+```javascript
+...
+  "fieldSchema": {
+    "address": {
+      "from": "${street}\n${city},${state}\n${zip}",
+      "type": "string"
+    },
+  ...
+```
 
 ```javascript
 
@@ -35,22 +50,24 @@ You can merge fields `Date Of Stop` and `Time Of Stop` map to one `time` field:
   "mapping": {
     "time": {
       // fields "Date of Stop" and "Time of Stop" will be concatenated to create timestamp
-      "from": ["Date of Stop", "Time Of Stop"], 
+      "from": ["Date Of Stop", "Time Of Stop"],
       "type": "timestamp",
       "format": "jsDate"
     },
     "fieldSchema": {
-      "someFieldInInflux": {
-        "from": "SomeFieldInCSV",
+      "coordinates": {
+        // fields "Latitude" and "Longitude" will be concatenated with "," delimiter to create "coordinates" field
+        "from": "${Latitude},${Longitude}",
         "type": "string"
       }
     },
     "tagSchema": {
-      "someTagInInflux": {
-        "from": "SomeOtherFieldInCSV",
+      "agency": {
+        "from": "Agency",
         "type": "*"
       }
     }
+  }
   ...
 }
 
