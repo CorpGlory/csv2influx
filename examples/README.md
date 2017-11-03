@@ -26,7 +26,7 @@ Date Of Stop,Time Of Stop, ...
 08/28/2017,23:41:00, ...
 ```
 
-You may marge fields `Date Of Stop` and `Time Of Stop` map to one `time` field:
+You can merge fields `Date Of Stop` and `Time Of Stop` map to one `time` field:
 
 ```javascript
 
