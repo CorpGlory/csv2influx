@@ -27,7 +27,11 @@ describe("Importer", function() {
       tagsSchema: {
         name: {
           from: 'name',
-          type: 'string'
+          type: '*'
+        },
+        type: {
+          from: 'type',
+          type: ['1', '2', '3']
         }
       }
     };
@@ -38,17 +42,16 @@ describe("Importer", function() {
       expect(vpr.namesMapping).to.deep.equal({});
     });
 
-    it("Parses fieldSchema", function() {
+    it("Parses schema", function() {
       var vpr = importer.flatSchema(mapping.fieldSchema);
       expect(vpr.schema).to.deep.equal({
-        'date': 'timestamp'
+        'description': 'string'
       });
-    });
-    
-    it("Parses tagsSchema", function() {
-      var vpr = importer.flatSchema(mapping.tagsSchema);
+
+      vpr = importer.flatSchema(mapping.tagsSchema);
       expect(vpr.schema).to.deep.equal({
-        'name': 'string'
+        'name': '*',
+        'type': ['1', '2', '3']
       });
     });
 

@@ -223,7 +223,7 @@ class Importer {
     var obj = {};
 
     for(var key in schema) {
-        obj[key] = record[namesMapping[key]];
+      obj[key] = record[namesMapping[key]];
     }
 
     return obj;

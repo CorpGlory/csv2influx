@@ -57,13 +57,13 @@ function _checkConfigObject(confObj) {
     return 'no mapping';
   }
   if(!confObj.mapping.time) {
-    return 'mapping.time';
+    return 'time field is missing';
   }
   if(!confObj.mapping.time.format) {
     return 'no format specified for time'
   }
   if(!confObj.mapping.fieldSchema) {
-    return 'mapping.fieldSchema';
+    return 'no fieldSchema specified';
   }
 
   return undefined;
