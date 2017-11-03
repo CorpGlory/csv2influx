@@ -31,18 +31,7 @@ You can merge fields `Date Of Stop` and `Time Of Stop` map to one `time` field.
 Also, you can merge any field or tag using template-string-like syntax. 
 "Imagine a csv has Street,City,State,Zip, you may want to merge those as "Street\nCity,State\nZip" (c) https://github.com/CorpGlory/csv2influx/issues/28#issuecomment-335570628
 
-Example:
-
-```javascript
-...
-  "fieldSchema": {
-    "address": {
-      "from": "${street}\n${city},${state}\n${zip}",
-      "type": "string"
-    },
-  ...
-```
-
+### Example
 ```javascript
 
 {
