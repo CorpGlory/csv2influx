@@ -20,7 +20,7 @@ switch(process.argv.length)
         else {
           var conf = config.loadConfig();
           var imp = new importer.Importer(conf);
-          isQuiet = process.argv.indexOf('-q') >= 0;
+          var isQuiet = process.argv.indexOf('-q') >= 0;
           // consider process.argv[2] as csv-filename
           imp.run(process.argv[2], isQuiet);
           break;
@@ -33,7 +33,7 @@ switch(process.argv.length)
             var conf = config.loadConfig(process.argv[3]);
             var imp = new importer.Importer(conf);
             // consider process.argv[4] as csv-filename
-            isQuiet = process.argv.indexOf('-q') >= 0;
+            var isQuiet = process.argv.indexOf('-q') >= 0;
             imp.run(process.argv[4], isQuiet)
                 .then(() => console.log(''));
             break;

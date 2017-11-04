@@ -7,21 +7,18 @@ const ProgressBar = require('progress');
 
 
 function parseValue(recordValue, mappingObject) {
-  if(mappingObject.type === 'timestamp') {
-    if(mappingObject.format === 'jsDate') {
-      // convert millisconds to nanoseconds
-      return (new Date(recordValue).getTime()) * 1000 * 1000;
-    }
+  if(mappingObject.format === 'jsDate') {
+    // convert millisconds to nanoseconds
+    return (new Date(recordValue).getTime()) * 1000 * 1000;
   }
+
   return recordValue;
 }
 
-function flatMappingToInfluxFieldSchema(mapping) {
-  var res = {};
+function flatSchema(schema) {
+  var flatSchema = {};
   var namesMapping = {};
-  var schema = mapping.fieldSchema;
-
-  Object.keys(schema).forEach(key => {
+  for(var key in schema) {
     if(schema[key].type === undefined) {
       console.error('mapping.fieldSchema[' + key + '].type is undefined');
       process.exit(errors.ERROR_BAD_CONFIG_FORMAT);
@@ -30,15 +27,13 @@ function flatMappingToInfluxFieldSchema(mapping) {
       console.error('mapping.fieldSchema[' + key + '].from is undefined');
       process.exit(errors.ERROR_BAD_CONFIG_FORMAT);
     }
-
-    res[key] = schema[key].type;
+    flatSchema[key] = schema[key].type;
     namesMapping[key] = schema[key].from;
-  });
-
+  }
   return {
-    fieldSchema: res,
-    namesMapping
-  };
+    schema: flatSchema,
+    namesMapping: namesMapping
+  }
 }
 
 function countFileLines(filePath) {
@@ -47,8 +42,10 @@ function countFileLines(filePath) {
   let i = 0;
   fs.createReadStream(filePath)
     .on("data", (buffer) => {
-      for (i = 0; i < buffer.length; ++i) {
-        if (buffer[i] == 10) lineCount++;
+      for(i = 0; i < buffer.length; ++i) {
+        if(buffer[i] == 10) {
+          lineCount++;
+        }
       }
     }).on("end", () => {
       resolve(lineCount);
@@ -62,7 +59,9 @@ class Importer {
     this.config = config;
     this.client = undefined;
     this.fieldSchema = undefined;
-    this.namesMapping = undefined;
+    this.tagSchema = undefined;
+    this.fieldsNamesMapping = undefined;
+    this.tagsNamesMapping = undefined;
     this.isQuiteMode = false;
     this.progressBar = undefined;
   }
@@ -113,28 +112,31 @@ class Importer {
     this.client = client;
     console.log('Schema: ' + this.config.measurementName);
 
-    const TAG_SCHEMA = {};
-    var flatMap = flatMappingToInfluxFieldSchema(this.config.mapping);
+    var fieldsFlatMap = flatSchema(this.config.mapping.fieldSchema);
+    var tagsFlatMap = flatSchema(this.config.mapping.tagSchema);
 
-    this.fieldSchema = flatMap.fieldSchema;
-    this.namesMapping = flatMap.namesMapping;
+    this.timeObject = this.config.mapping.time;
+    this.fieldSchema = fieldsFlatMap.schema;
+    this.fieldsNamesMapping = fieldsFlatMap.namesMapping;
+    this.tagSchema = tagsFlatMap.schema;
+    this.tagsNamesMapping = tagsFlatMap.namesMapping;
 
-    client.schema(this.config.measurementName, this.fieldSchema, TAG_SCHEMA, {
+    client.schema(this.config.measurementName, this.fieldSchema, this.tagSchema, {
       // default is false
       stripUnknown: true,
     });
 
     // callback for checking columns names in csv
+
     this.config.csv.columns = (cols) => {
-      Object.keys(this.fieldSchema).forEach(key => {
-        // if 'from' field is an array - checking each of them
-        if(Array.isArray(this.namesMapping[key])) {
-          this.namesMapping[key].forEach(el => this._checkColInCols(el, cols));
+      for(var key in this.fieldSchema) {
+        // if 'from' field is an array - checking each of array items
+        if(Array.isArray(this.fieldsNamesMapping[key])) {
+          this.fieldsNamesMapping[key].forEach(el => this._checkColInCols(el, cols));
+        } else {
+          this._checkColInCols(this.fieldsNamesMapping[key], cols);
         }
-        else {
-          this._checkColInCols(this.namesMapping[key], cols);
-        }
-      });
+      }
 
       // callback should return list of columns' names
       return cols;
@@ -177,37 +179,29 @@ class Importer {
 
   _writeRecordToInflux(record) {
 
-    var fieldObject = {
-    };
+    var fieldObject = this._convertSchemaToObject(this.fieldSchema, this.fieldsNamesMapping, record);
+    var tagObject = this._convertSchemaToObject(this.tagSchema, this.tagsNamesMapping, record);
 
-    var time;
-    var schema = this.fieldSchema;
+    var time = undefined;
 
-    Object.keys(schema).forEach(key => {
-      if(schema[key] === 'timestamp') {
-        if(Array.isArray(this.namesMapping[key])) {
-          var timestamp = [];
-          this.namesMapping[key].forEach(
-            el => timestamp.push(record[el])
-          );
-          time = parseValue(timestamp, this.config.mapping.fieldSchema[key]);
-        } else {
-          time = parseValue(record[this.namesMapping[key]], this.config.mapping.fieldSchema[key]);
-        }
-      } else {
-        fieldObject[key] = parseValue(record[this.namesMapping[key]], this.config.mapping.fieldSchema[key]);
-      }
-    });
+    if(Array.isArray(this.timeObject.from)) {
+      var timestamp = [];
+      this.timeObject['from'].forEach(
+        el => timestamp.push(record[el])
+      );
+      time = parseValue(timestamp, this.timeObject);
+    } else {
+      time = parseValue(record[this.timeObject.from], this.timeObject);
+    }
 
     var writer = this.client.write(this.config.measurementName)
-      .tag({
-        // TODO: add tags support
-      })
+      .tag(tagObject)
       .field(fieldObject)
 
     if(!this.isQuiteMode) {
-      console.log(fieldObject);
-      console.log('time: ' + time);
+      console.log('Fields: ' + JSON.stringify(fieldObject));
+      console.log('Tags: ' + JSON.stringify(tagObject));
+      console.log('Time: ' + time);
     }
 
     writer.time(time);
@@ -225,11 +219,21 @@ class Importer {
     }
   }
 
+  _convertSchemaToObject(schema, namesMapping, record) {
+    var obj = {};
+
+    for(var key in schema) {
+      obj[key] = record[namesMapping[key]];
+    }
+
+    return obj;
+  }
 }
 
 module.exports = {
   Importer,
   
   // for testing
-  parseValue
+  parseValue,
+  flatSchema
 }
