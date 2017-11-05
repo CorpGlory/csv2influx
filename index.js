@@ -19,10 +19,15 @@ switch(process.argv.length)
         }
         else {
           var conf = config.loadConfig();
-          var imp = new importer.Importer(conf);
           var isQuiet = process.argv.indexOf('-q') >= 0;
+          var imp = new importer.Importer(conf, process.argv[4], isQuiet);
           // consider process.argv[2] as csv-filename
-          imp.run(process.argv[2], isQuiet);
+          imp.run()
+            .then(() => console.log(''))
+            .catch((err) => {
+              console.error(err);
+              process.exit(1);
+            });
           break;
         }
         
@@ -31,10 +36,10 @@ switch(process.argv.length)
         if(process.argv[2] === '--config') {
             // consider process.argv[3] as config-filename
             var conf = config.loadConfig(process.argv[3]);
-            var imp = new importer.Importer(conf);
-            // consider process.argv[4] as csv-filename
             var isQuiet = process.argv.indexOf('-q') >= 0;
-            imp.run(process.argv[4], isQuiet)
+            var imp = new importer.Importer(conf, process.argv[4], isQuiet);
+            // consider process.argv[4] as csv-filename
+            imp.run()
                 .then(() => console.log(''))
                 .catch((err) => {
                   console.error(err);

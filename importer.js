@@ -53,32 +53,25 @@ function countFileLines(filePath) {
 
 class Importer {
 
-  constructor(config) {
+  constructor(config, inputFile, isQuiteMode) {
     this.config = config;
+    this.inputFile = inputFile;
+    this.isQuiteMode = isQuiteMode;
     this.client = undefined;
     this.fieldSchema = undefined;
     this.tagSchema = undefined;
     this.fieldsNamesMapping = undefined;
     this.tagsNamesMapping = undefined;
-    this.isQuiteMode = false;
     this.progressBar = undefined;
-  }
 
-  // TODO: it's better to move these params to constructor
-  //       and invode run without params
-  run(inputFile, isQuiteMode) {
-    if(inputFile === undefined) {
-      throw new Error('inputFile is undefined');
-    }
-    
-    if(!fs.existsSync(inputFile)) {
-      console.error(inputFile + ' doesn`t exist. Can`t continue.');
+    if (!fs.existsSync(this.inputFile)) {
+      console.error(`Error: ${this.inputFile} doesn't exist. Can't continue.`);
       process.exit(errors.ERROR_BAD_CSV_FILE);
     }
-    
-    this.inputFile = inputFile;
-    this.isQuiteMode = isQuiteMode;
-    if(isQuiteMode) {
+  }
+
+  run() {
+    if(this.isQuiteMode) {
       return countFileLines(this.inputFile)
         .then(linesCount => {
           this.linesCount = linesCount;
