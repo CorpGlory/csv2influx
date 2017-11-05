@@ -2,6 +2,7 @@
 
 const config = require('./config');
 const importer = require('./importer');
+const progress = require('progress');
 
 const usage = `
 Usage:
@@ -20,15 +21,9 @@ switch(process.argv.length)
         else {
           var conf = config.loadConfig();
           var isQuiet = process.argv.indexOf('-q') >= 0;
-          var imp = new importer.Importer(conf, process.argv[4], isQuiet);
           // consider process.argv[2] as csv-filename
-          imp.run()
-            .then(() => console.log(''))
-            .catch((err) => {
-              console.error(err);
-              process.exit(1);
-            });
-          break;
+          var inputFile = process.argv[2];
+          var progressBar = undefined;
         }
         
     case 5:
@@ -37,20 +32,43 @@ switch(process.argv.length)
             // consider process.argv[3] as config-filename
             var conf = config.loadConfig(process.argv[3]);
             var isQuiet = process.argv.indexOf('-q') >= 0;
-            var imp = new importer.Importer(conf, process.argv[4], isQuiet);
             // consider process.argv[4] as csv-filename
-            imp.run()
-                .then(() => console.log(''))
-                .catch((err) => {
-                  console.error(err);
-                  process.exit(1);
-                });
+            var inputFile = process.argv[4];
+            var progressBar = undefined;
+            
             break;
         }
 
     default:
         console.log(usage);
         process.exit(0);
+}
+
+if (isQuiet) {
+  importer.countFileLines(inputFile)
+    .then(linesCount => {
+      console.log('lines count:' + linesCount);
+      progressBar = new progress(':current/:total (:percent) :bar ', { 
+        width: 100, 
+        total: linesCount
+      });
+      var imp = new importer.Importer(conf, inputFile, progressBar);
+      imp.run()
+        .then(() => console.log(''))
+        .catch(err => {
+          progressBar.terminate();
+          console.error(err);
+          process.exit(1);
+        });
+    });
+} else {
+  var imp = new importer.Importer(conf, inputFile, progressBar);
+  imp.run()
+    .then(() => console.log(''))
+    .catch(err => {
+      console.error(err);
+      process.exit(1);
+    });
 }
 
 

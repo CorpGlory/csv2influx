@@ -3,7 +3,6 @@ const Influx = require('influxdb-nodejs');
 const fs = require('fs');
 const parse = require('csv-parse');
 const transform = require('stream-transform');
-const ProgressBar = require('progress');
 
 
 function parseValue(recordValue, mappingObject) {
@@ -53,16 +52,16 @@ function countFileLines(filePath) {
 
 class Importer {
 
-  constructor(config, inputFile, isQuiteMode) {
+  constructor(config, inputFile, progressBar) {
     this.config = config;
     this.inputFile = inputFile;
-    this.isQuiteMode = isQuiteMode;
+    this.progressBar = progressBar;
+    this.isQuiteMode = (progressBar)? true: false;
     this.client = undefined;
     this.fieldSchema = undefined;
     this.tagSchema = undefined;
     this.fieldsNamesMapping = undefined;
     this.tagsNamesMapping = undefined;
-    this.progressBar = undefined;
 
     if (!fs.existsSync(this.inputFile)) {
       console.error(`Error: ${this.inputFile} doesn't exist. Can't continue.`);
@@ -71,24 +70,11 @@ class Importer {
   }
 
   run() {
-    if(this.isQuiteMode) {
-      return countFileLines(this.inputFile)
-        .then(linesCount => {
-          this.linesCount = linesCount;
-          return this._import();
-        })
-    } else {
-      return this._import();
-    }
+    return this._import();
   }
   
   _import() {
     return new Promise((resolve, reject) => {
-      if(this.isQuiteMode) {
-        console.log('lines count:' + this.linesCount);
-        this.progressBar = new ProgressBar(':current/:total (:percent) :bar ', { width: 100, total: this.linesCount });
-      }
-
       console.log('Connecting to ' + this.config.influxdbUrl);
       const client = new Influx(this.config.influxdbUrl);
       if(client === undefined) {
@@ -145,10 +131,10 @@ class Importer {
             callback(null);
           })
           .catch(err => {
-            var errMessage = '\n [' + num + '] BAD_WRITE';
-            errMessage += record;
-            errMessage += err;
-            errMessage += JSON.stringify(err, null, 2)
+            var errMessage = `${num} BAD_WRITE\n` +
+              `${JSON.stringify(record, null, 2)}\n` +
+              `${err}\n` +
+              `${JSON.stringify(err, null, 2)}`;
 
             reject(errMessage);
           });
@@ -217,6 +203,7 @@ class Importer {
 
 module.exports = {
   Importer,
+  countFileLines,
   
   // for testing
   parseValue,
