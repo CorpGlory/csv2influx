@@ -35,7 +35,11 @@ switch(process.argv.length)
             // consider process.argv[4] as csv-filename
             var isQuiet = process.argv.indexOf('-q') >= 0;
             imp.run(process.argv[4], isQuiet)
-                .then(() => console.log(''));
+                .then(() => console.log(''))
+                .catch((err) => {
+                  console.error(err);
+                  process.exit(1);
+                });
             break;
         }
 
