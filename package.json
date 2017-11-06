@@ -27,9 +27,11 @@
   },
   "homepage": "https://github.com/CorpGlory/csv2influx#readme",
   "dependencies": {
-    "csv-parse": "^1.2.4",
+    "csv-parse": "^1.3.3",
     "influxdb-nodejs": "^2.7.4",
-    "progress": "^2.0.0"
+    "minimist": "^1.2.0",
+    "progress": "^2.0.0",
+    "stream-transform": "^1.0.0"
   },
   "devDependencies": {
     "chai": "^4.1.2",
