@@ -43,5 +43,3 @@ switch(process.argv.length)
         console.log(usage);
         process.exit(0);
 }
-
-
