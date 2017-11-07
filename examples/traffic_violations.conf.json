@@ -8,8 +8,8 @@
       "format": "jsDate"
     },
     "fieldSchema": {
-      "description": {
-        "from": "Description",
+      "coordinates": {
+        "from": "${Latitude},${Longitude}",
         "type": "string"
       }
     },
