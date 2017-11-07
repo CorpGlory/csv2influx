@@ -62,11 +62,6 @@ class Importer {
     this.tagSchema = undefined;
     this.fieldsNamesMapping = undefined;
     this.tagsNamesMapping = undefined;
-
-    if (!fs.existsSync(this.inputFile)) {
-      console.error(`Error: ${this.inputFile} doesn't exist. Can't continue.`);
-      process.exit(errors.ERROR_BAD_CSV_FILE);
-    }
   }
 
   run() {

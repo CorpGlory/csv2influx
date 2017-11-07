@@ -4,6 +4,7 @@ const config = require('./config');
 const importer = require('./importer');
 const progress = require('progress');
 const minimist = require('minimist')
+const fs = require('fs');
 
 const usage = `
 Usage:
@@ -15,6 +16,7 @@ Options:
                                       Default: ./csv2influx.conf.json
   -q, --quiet                         [optional] Makes output quiet (progress bar instead of written to DB values)
 `
+
 
 var args = minimist(process.argv.slice(2), {
   string: ['config'],
@@ -34,6 +36,11 @@ if(args._.length > 0) {
     var inputFile = args._[0];
     var progressBar = undefined;
 
+    if (!fs.existsSync(inputFile)) {
+      console.error(`${inputFile} doesn't exist. Can't continue.`);
+      process.exit(1);
+    }
+
     importer.countFileLines(inputFile)
       .then(linesCount => {
         console.log('lines count:' + linesCount);
@@ -44,7 +51,7 @@ if(args._.length > 0) {
           });
         }
 
-        var imp = new importer.Importer(conf, inputFile, progressBar)
+        var imp = new importer.Importer(conf, inputFile, progressBar);
         imp.run()
           .then(() => console.log(''))
           .catch(err => {
