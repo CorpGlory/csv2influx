@@ -1,5 +1,6 @@
 #! /usr/bin/env node
 
+const minimist = require('minimist');
 const config = require('./config');
 const importer = require('./importer');
 const progress = require('progress');
