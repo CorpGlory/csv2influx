@@ -47,8 +47,9 @@ function countFileLines(filePath) {
         }
       })
       .on("end", () => {
-      resolve(lineCount);
-    }).on("error", reject);
+        resolve(lineCount);
+      })
+      .on("error", reject);
   });
 }
 
@@ -61,8 +62,7 @@ function convertSchemaToObject(schema, namesMapping, record) {
     var items = tpl.getItems();
     if(items.length > 0) {
       obj[key] = tpl.render(record);
-    }
-    else {
+    } else {
       obj[key] = record[namesMapping[key]];
     }
   }
@@ -114,20 +114,21 @@ class Importer {
 
       // callback for checking columns names in csv
 
-    this.config.csv.columns = (cols) => {
-      for(var key in this.fieldSchema) {
-        // if 'from' field is an array - checking each of array items
-        if(Array.isArray(this.fieldsNamesMapping[key])) {
-          this.fieldsNamesMapping[key].forEach(el => this._checkColInCols(el, cols));
-        } else {
-          var tpl = new template.Template(this.fieldsNamesMapping[key]);
-          var items = tpl.getItems();
-          if(items.length > 0) {
-            items.forEach(
-              (item) => this._checkColInCols(item, cols)
-            );
+      this.config.csv.columns = (cols) => {
+        for(var key in this.fieldSchema) {
+          // if 'from' field is an array - checking each of array items
+          if(Array.isArray(this.fieldsNamesMapping[key])) {
+            this.fieldsNamesMapping[key].forEach(el => this._checkColInCols(el, cols));
           } else {
-            this._checkColInCols(this.fieldsNamesMapping[key], cols);
+            var tpl = new template.Template(this.fieldsNamesMapping[key]);
+            var items = tpl.getItems();
+            if(items.length > 0) {
+              items.forEach(
+                (item) => this._checkColInCols(item, cols)
+              );
+            } else {
+              this._checkColInCols(this.fieldsNamesMapping[key], cols);
+            }
           }
         }
 

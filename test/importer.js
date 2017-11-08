@@ -71,7 +71,6 @@ describe("Importer", function() {
       });
     });
 
-<<<<<<< HEAD
     it("Merges columns", function() {
       var flatSchema = importer.flatSchema(mapping.fieldSchema);
       var vpr = importer.convertSchemaToObject(flatSchema.schema, flatSchema.namesMapping, record);
@@ -81,23 +80,21 @@ describe("Importer", function() {
         'address': 'Nevskiy pr.\nSt. Petersburg,Russia\n192121'
       });
     });    
-=======
+
     it("Throws error on field.from undefined", function() {
       var clone = JSON.parse(JSON.stringify(mapping));
-      clone.fieldSchema.description.from = undefined;
+      clone.fieldSchema.num.from = undefined;
       expect(() =>
         importer.flatSchema(clone.fieldSchema)
-      ).to.throw('mapping.fieldSchema[description].from is undefined');
+      ).to.throw('mapping.fieldSchema[num].from is undefined');
     });
 
     it("Throws error on field.type undefined", function () {
       var clone = JSON.parse(JSON.stringify(mapping));
-      clone.fieldSchema.description.type = undefined;
+      clone.fieldSchema.num.type = undefined;
       expect(() =>
         importer.flatSchema(clone.fieldSchema)
-      ).to.throw('mapping.fieldSchema[description].type is undefined');
+      ).to.throw('mapping.fieldSchema[num].type is undefined');
     });
-
->>>>>>> a6056893db40a8a9fe3f6c0f63bc6d92aa78910e
   });
 });

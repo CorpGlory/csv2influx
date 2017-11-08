@@ -4,7 +4,6 @@ const minimist = require('minimist');
 const config = require('./config');
 const importer = require('./importer');
 const progress = require('progress');
-const minimist = require('minimist')
 const fs = require('fs');
 
 const usage = `
