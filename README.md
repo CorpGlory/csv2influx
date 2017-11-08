@@ -71,9 +71,6 @@ See more [examples](examples) to learn more about mapping
 
 ## Changelog
 
-###### 0.0.13
-  Added support for merging any field
-
 ###### 0.0.12 
   Added tags support
 

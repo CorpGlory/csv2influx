@@ -159,8 +159,7 @@ class Importer {
             items.forEach(
               (item) => this._checkColInCols(item, cols)
             );
-          }
-          else {
+          } else {
             this._checkColInCols(this.fieldsNamesMapping[key], cols);
           }
         }
