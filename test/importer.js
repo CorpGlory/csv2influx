@@ -3,7 +3,7 @@ const importer = require("../importer");
 
 describe("Importer", function() {
   describe("parseValue", function() {
-    it("Parses datetes to nanoseconds", function() {
+    it("Parses date to nanoseconds", function() {
       var parsedValue = importer.parseValue(
         '09/24/2013 17:11:00', { type: "timestamp", format: "jsDate" }
       );
@@ -71,6 +71,7 @@ describe("Importer", function() {
       });
     });
 
+<<<<<<< HEAD
     it("Merges columns", function() {
       var flatSchema = importer.flatSchema(mapping.fieldSchema);
       var vpr = importer.convertSchemaToObject(flatSchema.schema, flatSchema.namesMapping, record);
@@ -80,5 +81,23 @@ describe("Importer", function() {
         'address': 'Nevskiy pr.\nSt. Petersburg,Russia\n192121'
       });
     });    
+=======
+    it("Throws error on field.from undefined", function() {
+      var clone = JSON.parse(JSON.stringify(mapping));
+      clone.fieldSchema.description.from = undefined;
+      expect(() =>
+        importer.flatSchema(clone.fieldSchema)
+      ).to.throw('mapping.fieldSchema[description].from is undefined');
+    });
+
+    it("Throws error on field.type undefined", function () {
+      var clone = JSON.parse(JSON.stringify(mapping));
+      clone.fieldSchema.description.type = undefined;
+      expect(() =>
+        importer.flatSchema(clone.fieldSchema)
+      ).to.throw('mapping.fieldSchema[description].type is undefined');
+    });
+
+>>>>>>> a6056893db40a8a9fe3f6c0f63bc6d92aa78910e
   });
 });
