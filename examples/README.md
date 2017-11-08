@@ -11,7 +11,7 @@ See next example to learn how to merge Date/Time
 ### Run
 
 ```
-csv2influx --config aitQuality.conf.json aitQuality.csv
+csv2influx --config airQuality.conf.json airQuality.csv
 ```
 
 # Traffic Violations
