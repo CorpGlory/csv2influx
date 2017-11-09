@@ -45,7 +45,8 @@ Also, you can merge any field or tag using template-string-like syntax.
     },
     "fieldSchema": {
       "coordinates": {
-        // fields "Latitude" and "Longitude" will be concatenated with "," delimiter to create "coordinates" field
+        // fields "Latitude" and "Longitude" will be concatenated 
+        // with "," delimiter to create "coordinates" field
         "from": "${Latitude},${Longitude}",
         "type": "string"
       }
