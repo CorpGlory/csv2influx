@@ -1,4 +1,5 @@
 const errors = require('./errors');
+const template = require('./template');
 const Influx = require('influxdb-nodejs');
 const fs = require('fs');
 const parse = require('csv-parse');
@@ -44,11 +45,30 @@ function countFileLines(filePath) {
             lineCount++;
           }
         }
-      }).on("end", () => {
-        resolve(lineCount - 1); // first string is table head
-      }).on("error", reject);
-    });
-};
+      })
+      .on("end", () => {
+        resolve(lineCount);
+      })
+      .on("error", reject);
+  });
+}
+
+function convertSchemaToObject(schema, namesMapping, record) {
+  var obj = {};
+
+  for(var key in schema) {
+    var tpl = new template.Template(namesMapping[key]);
+
+    var items = tpl.getItems();
+    if(items.length > 0) {
+      obj[key] = tpl.render(record);
+    } else {
+      obj[key] = record[namesMapping[key]];
+    }
+  }
+
+  return obj;
+}
 
 class Importer {
 
@@ -100,7 +120,15 @@ class Importer {
           if(Array.isArray(this.fieldsNamesMapping[key])) {
             this.fieldsNamesMapping[key].forEach(el => this._checkColInCols(el, cols));
           } else {
-            this._checkColInCols(this.fieldsNamesMapping[key], cols);
+            var tpl = new template.Template(this.fieldsNamesMapping[key]);
+            var items = tpl.getItems();
+            if(items.length > 0) {
+              items.forEach(
+                (item) => this._checkColInCols(item, cols)
+              );
+            } else {
+              this._checkColInCols(this.fieldsNamesMapping[key], cols);
+            }
           }
         }
 
@@ -145,8 +173,8 @@ class Importer {
 
   _writeRecordToInflux(record) {
 
-    var fieldObject = this._convertSchemaToObject(this.fieldSchema, this.fieldsNamesMapping, record);
-    var tagObject = this._convertSchemaToObject(this.tagSchema, this.tagsNamesMapping, record);
+    var fieldObject = convertSchemaToObject(this.fieldSchema, this.fieldsNamesMapping, record);
+    var tagObject = convertSchemaToObject(this.tagSchema, this.tagsNamesMapping, record);
 
     var time = undefined;
 
@@ -184,16 +212,6 @@ class Importer {
       throw new Error(errMessage);
     }
   }
-
-  _convertSchemaToObject(schema, namesMapping, record) {
-    var obj = {};
-
-    for(var key in schema) {
-      obj[key] = record[namesMapping[key]];
-    }
-
-    return obj;
-  }
 }
 
 module.exports = {
@@ -202,5 +220,7 @@ module.exports = {
   
   // for testing
   parseValue,
-  flatSchema
+  flatSchema,
+  convertSchemaToObject
+
 }
