@@ -58,13 +58,13 @@ describe("Config", function() {
       expect(vpr).to.be.equal("no mapping field");
     });
 
-    it("Returns error when mapping.time undefined", function () {
+    it("Returns error when mapping.time.format undefined", function () {
       var clone = copyObjectDeep(configObj);
-      clone.mapping.time = undefined;
+      clone.mapping.time.format = undefined;
 
       var vpr = config._checkConfigObject(clone);
 
-      expect(vpr).to.be.equal("no time field");
+      expect(vpr).to.be.equal("no format specified for time");
     });
 
     it("Returns error when fieldSchema undefined", function () {
