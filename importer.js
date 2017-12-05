@@ -176,17 +176,7 @@ class Importer {
     var fieldObject = convertSchemaToObject(this.fieldSchema, this.fieldsNamesMapping, record);
     var tagObject = convertSchemaToObject(this.tagSchema, this.tagsNamesMapping, record);
 
-    var time = undefined;
-
-    if(Array.isArray(this.timeObject.from)) {
-      var timestamp = [];
-      this.timeObject['from'].forEach(
-        el => timestamp.push(record[el])
-      );
-      time = parseValue(timestamp, this.timeObject);
-    } else {
-      time = parseValue(record[this.timeObject.from], this.timeObject);
-    }
+    var time = this._getTimeFromRecord(record);
 
     var writer = this.client.write(this.config.measurementName)
       .tag(tagObject)
@@ -210,6 +200,22 @@ class Importer {
       errMessage += `column names (current delimiter: "${this.config.csv.delimiter}"):\n`;
       cols.forEach((el, idx) => errMessage += (idx+1) + ': ' + el + '\n');
       throw new Error(errMessage);
+    }
+  }
+
+  _getTimeFromRecord(record) {
+    if (this.timeObject !== undefined) {
+      if (Array.isArray(this.timeObject.from)) {
+        var timestamp = [];
+        this.timeObject['from'].forEach(
+          el => timestamp.push(record[el])
+        );
+        return parseValue(timestamp, this.timeObject);
+      } else {
+        return parseValue(record[this.timeObject.from], this.timeObject);
+      }
+    } else {
+      return Date.now() * 1000 * 1000;
     }
   }
 }
