@@ -56,14 +56,15 @@ function _checkConfigObject(confObj) {
   if(!confObj.mapping) {
     return 'no mapping field';
   }
-  if(!confObj.mapping.time) {
-    return 'no time field';
-  }
-  if(!confObj.mapping.time.format) {
-    return 'no format specified for time'
-  }
   if(!confObj.mapping.fieldSchema) {
     return 'no fieldSchema specified';
+  }
+  if(!confObj.mapping.time) {
+    console.log(`WARNING: you didn't set time field, importing rows with current time`);
+  } else {
+    if(!confObj.mapping.time.format) {
+      return 'no format specified for time';
+    }
   }
 
   return undefined;
