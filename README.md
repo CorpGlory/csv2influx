@@ -75,6 +75,9 @@ See more [examples](examples) to learn more about mapping
 
 ## Changelog
 
+###### 0.0.13
+- Optional "Time" field in config. 
+
 ###### 0.0.12 
 -  Tags support
 -  Merging CSV-fields using template-sting-like-syntax
