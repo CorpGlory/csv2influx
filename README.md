@@ -1,6 +1,6 @@
 # csv2influx
 
-A CLI tool for converting csv file to influxdb database.
+A CLI tool for importing csv file to influxdb database.
 You can map csv fields to influxdb columns in config file.
 
 See [examples](examples)
@@ -32,7 +32,9 @@ Options:
   "influxdbUrl": "http://127.0.0.1:8086/INFLUXDB_URL", // Database has to exist
   "measurementName": "MEASUREMENT_NAME",
   "mapping": {
-    "time": { // first you need to specify from which fields you will get time
+    "time": { // specifies CSV-fields used to get time.
+              // In case it's not defined you get WARNING and
+              // current time is written to DB
       "from": "date",
       "type": "timestamp",
       "format": "jsDate" // field "format" is required for timestamp.
