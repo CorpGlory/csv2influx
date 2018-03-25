@@ -90,10 +90,10 @@ class Importer {
   
   _import() {
     return new Promise((resolve, reject) => {
-      console.log('Connecting to ' + this.config.influxdbUrl);
-      const client = new Influx(this.config.influxdbUrl);
+      console.log('Connecting to ' + this.config.influxdbUri);
+      const client = new Influx(this.config.influxdbUri);
       if(client === undefined) {
-        throw new Error('Can`t connect to ' + this.config.influxdbUrl);
+        throw new Error('Can`t connect to ' + this.config.influxdbUri);
       }
       this.client = client;
       console.log('Schema: ' + this.config.measurementName);

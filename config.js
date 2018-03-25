@@ -4,7 +4,7 @@ const fs = require('fs');
 const INIT_CONF_FILE_NAME = 'csv2influx.conf.json';
 
 var config = {
-  influxdbUrl: 'http://127.0.0.1:8086/INFLUXDB_URL',
+  influxdbUri: 'INFLUXDB_URI',
   measurementName: 'MEASUREMENT_NAME',
   mapping: {
     time: {
@@ -50,8 +50,8 @@ function _checkConfigObject(confObj) {
   if(!confObj.measurementName) {
     return 'no measurementName field';
   }
-  if(!confObj.influxdbUrl) {
-    return 'no influxdbUrl field';
+  if(!(confObj.influxdbUri || confObj.influxdbUrl)) {
+    return 'no influxdbUri field';
   }
   if(!confObj.mapping) {
     return 'no mapping field';
@@ -70,8 +70,16 @@ function _checkConfigObject(confObj) {
   return undefined;
 }
 
+function _reformatConfigObject(confObj) {
+  if(confObj.influxdbUri === undefined) {
+    console.log('Takes influxdbUri from influxdbUrl');
+    console.log(confObj.influxdbUrl);
+    confObj.influxdbUri = confObj.influxdbUrl;
+  }
+}
+
 function loadConfig(config_file_name) {
-  config_file_name = typeof config_file_name  !== 'undefined' ? config_file_name : INIT_CONF_FILE_NAME;
+  config_file_name = config_file_name === undefined ? config_file_name : INIT_CONF_FILE_NAME;
 
   console.log('Reading ' + config_file_name);
   if(!fs.existsSync(config_file_name)) {
@@ -88,6 +96,7 @@ function loadConfig(config_file_name) {
     console.log('Config format error: ' + checkErr);
     process.exit(errors.ERROR_BAD_CONFIG_FORMAT);
   }
+  _reformatConfigObject(confObj);
   console.log('ok');
   return confObj;
 }

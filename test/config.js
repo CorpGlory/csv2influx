@@ -46,7 +46,7 @@ describe("Config", function() {
 
       var vpr = config._checkConfigObject(clone);
 
-      expect(vpr).to.be.equal("no influxdbUrl field");
+      expect(vpr).to.be.equal("no influxdbUri field");
     });
 
     it("Returns error when mapping undefined", function () {
@@ -74,6 +74,16 @@ describe("Config", function() {
       var vpr = config._checkConfigObject(clone);
 
       expect(vpr).to.be.equal("no fieldSchema specified");
+    });
+
+    it("Can use influxdbUri insdead of influxdbUrl", function () {
+      var clone = copyObjectDeep(configObj);
+      clone.influxdbUri = clone.influxdbUrl;
+      delete clone.influxdbUrl;
+
+      var vpr = config._checkConfigObject(clone);
+
+      expect(vpr).to.be.undefined;
     });
   });
 });
