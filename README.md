@@ -81,3 +81,7 @@ See more [examples](examples) to learn more about mapping
 ###### 0.0.12 
 -  Tags support
 -  Merging CSV-fields using template-sting-like-syntax
+
+## Credits
+
+Made by [CorpGlory Team](http://corpglory.com/)
