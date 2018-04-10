@@ -78,16 +78,16 @@ function _reformatConfigObject(confObj) {
   }
 }
 
-function loadConfig(config_file_name) {
-  config_file_name = config_file_name !== undefined ? config_file_name : INIT_CONF_FILE_NAME;
+function loadConfig(configFilename) {
+  configFilename = configFilename !== undefined ? configFilename : INIT_CONF_FILE_NAME;
 
-  console.log('Reading ' + config_file_name);
-  if(!fs.existsSync(config_file_name)) {
-    console.error(config_file_name + ' doesn`t exist. Can`t continue.');
+  console.log('Reading ' + configFilename);
+  if(!fs.existsSync(configFilename)) {
+    console.error(configFilename + ' doesn`t exist. Can`t continue.');
     console.error('csv2influx init      to create template config')
     process.exit(errors.ERROR_BAD_CONFIG_FILE);
   }
-  var str = fs.readFileSync(config_file_name).toString();
+  var str = fs.readFileSync(configFilename).toString();
   var confObj = JSON.parse(str);
   console.log('ok');
   console.log('checking format');
