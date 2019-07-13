@@ -83,6 +83,6 @@ See more [examples](examples) to learn more about mapping
 -  Tags support
 -  Merging CSV-fields using template-sting-like-syntax
 
-## Credits
+## About CorpGlory Inc.
+The project developed by [CorpGlory Inc.](https://corpglory.com/), a company which provides high quality software development, data visualization, Grafana and monitoring consulting.
 
-Made by [CorpGlory Team](http://corpglory.com/)
