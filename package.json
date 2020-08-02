@@ -20,7 +20,7 @@
     "converter",
     "influxdb"
   ],
-  "author": "Alexey Velikiy",
+  "author": "CorpGlory Inc.",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/CorpGlory/csv2influx/issues"

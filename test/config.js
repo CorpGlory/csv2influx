@@ -6,7 +6,7 @@ describe("Config", function() {
     
     var configObj = {
       "measurementName": "events",
-      "influxdbUrl": "http://127.0.0.1:8086/traffic_violations",
+      "influxdbUrl": "http://127.0.0.1:8086/traffic-violations",
       "mapping": {
         "time": {
           "from": ["Date Of Stop", "Time Of Stop"],

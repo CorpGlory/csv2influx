@@ -1,11 +1,11 @@
 const errors = require('./errors');
 const fs = require('fs');
 
-const INIT_CONF_FILE_NAME = 'csv2influx.conf.json';
 
-var config = {
-  influxdbUri: 'INFLUXDB_URI',
-  measurementName: 'MEASUREMENT_NAME',
+const DEFAULT_CONF_FILE_NAME = 'csv2influx.conf.json';
+const INIT_CONFIG = {
+  influxdbUri: 'http://127.0.0.1:8086/database-name',
+  measurementName: 'measurment-name',
   mapping: {
     time: {
       from: 'date',
@@ -13,12 +13,8 @@ var config = {
       format: 'jsDate'
     },
     fieldSchema: {
-      lat: {
-        from: 'lat',
-        type: 'float'
-      },
       lng: {
-        from: 'lng',
+        from: 'some-value',
         type: 'float'
       },
       name: {
@@ -29,10 +25,6 @@ var config = {
         from: 'description',
         type: 'string'
       },
-      location: {
-        from: 'location',
-        type: 'string'
-      },
     },
   },
   csv: {
@@ -41,8 +33,8 @@ var config = {
 }
 
 function initConfig() {
-  console.log('Writing ' + INIT_CONF_FILE_NAME);
-  fs.writeFileSync(INIT_CONF_FILE_NAME, JSON.stringify(config, null, 2));
+  console.log('Writing ' + DEFAULT_CONF_FILE_NAME);
+  fs.writeFileSync(DEFAULT_CONF_FILE_NAME, JSON.stringify(INIT_CONFIG, null, 2));
   console.log('ok');
 }
 
@@ -66,20 +58,19 @@ function _checkConfigObject(confObj) {
       return 'no format specified for time';
     }
   }
-
   return undefined;
 }
 
 function _reformatConfigObject(confObj) {
   if(confObj.influxdbUri === undefined) {
-    console.log('Takes influxdbUri from influxdbUrl');
+    console.log('Trying influxdbUrl instead of influxdbUri');
     console.log(confObj.influxdbUrl);
     confObj.influxdbUri = confObj.influxdbUrl;
   }
 }
 
 function loadConfig(configFilename) {
-  configFilename = configFilename !== undefined ? configFilename : INIT_CONF_FILE_NAME;
+  configFilename = configFilename !== undefined ? configFilename : DEFAULT_CONF_FILE_NAME;
 
   console.log('Reading ' + configFilename);
   if(!fs.existsSync(configFilename)) {

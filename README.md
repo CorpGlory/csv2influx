@@ -29,9 +29,9 @@ Options:
 ```javascript
 
 {
-  "influxdbUri": "http://127.0.0.1:8086/INFLUXDB_URL", // Database has to exist
+  "influxdbUri": "http://127.0.0.1:8086/database-name", // Database has to exist
   // URI format: http://user:pass@localhost:port,anotherhost:port,yetanother:port/mydatabase
-  "measurementName": "MEASUREMENT_NAME",
+  "measurementName": "measurment-name",
   "mapping": {
     "time": { // specifies CSV-fields used to get time.
               // In case it's not defined you get WARNING and
@@ -72,7 +72,7 @@ Options:
 
 ```
 
-See more [examples](examples) to learn more about mapping
+See [examples](examples).
 
 ## Changelog
 
@@ -84,5 +84,5 @@ See more [examples](examples) to learn more about mapping
 -  Merging CSV-fields using template-sting-like-syntax
 
 ## About CorpGlory Inc.
-The project developed by [CorpGlory Inc.](https://corpglory.com/), a company which provides high quality software development, data visualization, Grafana and monitoring consulting.
-
+The project developed by [CorpGlory Inc.](https://corpglory.com/), a company which provides high 
+quality software development, data visualization, Grafana and monitoring consulting.

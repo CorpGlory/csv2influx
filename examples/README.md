@@ -2,7 +2,7 @@
 Based on https://archive.ics.uci.edu/ml/datasets/Air+quality.
 First two columns merged to one.
 
-The folder contains [airQuality.csv](airQuality.csv) and [airQuality.conf.json](airQuality.conf.json) for it.
+The folder contains [air-quality.csv](air-quality.csv) and [air-quality.conf.json](air-quality.conf.json) for it.
 Examples demonstrates how to take subset of all fields from csv file. Also `;` delimeter is used.
 
 See next example to learn how to merge Date/Time
@@ -11,7 +11,7 @@ See next example to learn how to merge Date/Time
 ### Run
 
 ```
-csv2influx --config airQuality.conf.json airQuality.csv
+csv2influx --config air-quality.conf.json air-quality.csv
 ```
 
 # Traffic Violations
@@ -27,15 +27,16 @@ Date Of Stop,Time Of Stop, ...
 ```
 
 You can merge fields `Date Of Stop` and `Time Of Stop` map to one `time` field.
+So you can put `"from": ["Date Of Stop", "Time Of Stop"],` to merge columns into one separated by space.
 
 Also, you can merge any field or tag using template-string-like syntax. 
-"Imagine a csv has Street,City,State,Zip, you may want to merge those as "Street\nCity,State\nZip" (c) https://github.com/CorpGlory/csv2influx/issues/28#issuecomment-335570628
+Let's say you have a csv file with columns `Latitude` and `Longitude`, but in the you want to merge
+these columns into one using format `"${Latitude},${Longitude}"`:
 
 ### Example
 ```javascript
-
 {
-  ...
+  // ...
   "mapping": {
     "time": {
       // fields "Date of Stop" and "Time of Stop" will be concatenated to create timestamp
@@ -58,13 +59,15 @@ Also, you can merge any field or tag using template-string-like syntax.
       }
     }
   }
-  ...
+  // ...
 }
 
 ```
 
+This example is bases on a [github comment](https://github.com/CorpGlory/csv2influx/issues/28#issuecomment-335570628)
+
 ### Run
 
 ```
-csv2influx --config traffic_violations.conf.json traffic_violations.csv
+csv2influx --config traffic-violations.conf.json traffic-violations.csv
 ```
