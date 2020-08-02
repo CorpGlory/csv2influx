@@ -1,9 +1,9 @@
-const errors = require('./errors');
+const errors = require('./errors'); // TODO: use it or remove it
 const template = require('./template');
 const Influx = require('influxdb-nodejs');
-const fs = require('fs');
 const parse = require('csv-parse');
 const transform = require('stream-transform');
+const fs = require('fs');
 
 
 function parseValue(recordValue, mappingObject) {

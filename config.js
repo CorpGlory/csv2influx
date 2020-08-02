@@ -61,7 +61,7 @@ function _checkConfigObject(confObj) {
   return undefined;
 }
 
-function _reformatConfigObject(confObj) {
+function _ensureInfluxUri(confObj) {
   if(confObj.influxdbUri === undefined) {
     console.log('Trying influxdbUrl instead of influxdbUri');
     console.log(confObj.influxdbUrl);
@@ -87,7 +87,7 @@ function loadConfig(configFilename) {
     console.log('Config format error: ' + checkErr);
     process.exit(errors.ERROR_BAD_CONFIG_FORMAT);
   }
-  _reformatConfigObject(confObj);
+  _ensureInfluxUri(confObj);
   console.log('ok');
   return confObj;
 }
