@@ -41,7 +41,9 @@ if(args._.length > 0) {
       console.error(`${inputFile} doesn't exist. Can't continue.`);
       process.exit(1);
     }
-
+    
+    // TODO: make it possible to run the script without cutting lines
+    // TODO: maybe count progress by size of the file and current offset in the file
     importer.countFileLines(inputFile)
       .then(linesCount => {
         console.log('lines count:' + linesCount);
@@ -52,6 +54,7 @@ if(args._.length > 0) {
           });
         }
 
+        // TODO: don't put progressBar, but create an iterator
         var imp = new importer.Importer(conf, inputFile, progressBar);
         imp.run()
           .then(() => console.log(''))

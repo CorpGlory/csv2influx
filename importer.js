@@ -1,6 +1,7 @@
 const errors = require('./errors'); // TODO: use it or remove it
 const template = require('./template');
-const Influx = require('influxdb-nodejs');
+
+const influxdb = require('influxdb-nodejs');
 const parse = require('csv-parse');
 const transform = require('stream-transform');
 const fs = require('fs');
@@ -76,7 +77,7 @@ class Importer {
     this.config = config;
     this.inputFile = inputFile;
     this.progressBar = progressBar;
-    this.isQuiteMode = (progressBar)? true: false;
+    this.isQuiteMode = progressBar ? true: false;
     this.client = undefined;
     this.fieldSchema = undefined;
     this.tagSchema = undefined;
@@ -91,7 +92,7 @@ class Importer {
   _import() {
     return new Promise((resolve, reject) => {
       console.log('Connecting to ' + this.config.influxdbUri);
-      const client = new Influx(this.config.influxdbUri);
+      const client = new influxdb(this.config.influxdbUri);
       if(client === undefined) {
         throw new Error('Can`t connect to ' + this.config.influxdbUri);
       }
@@ -205,8 +206,8 @@ class Importer {
   }
 
   _getTimeFromRecord(record) {
-    if (this.timeObject !== undefined) {
-      if (Array.isArray(this.timeObject.from)) {
+    if(this.timeObject !== undefined) {
+      if(Array.isArray(this.timeObject.from)) {
         var timestamp = [];
         this.timeObject['from'].forEach(
           el => timestamp.push(record[el])
