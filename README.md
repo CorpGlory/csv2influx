@@ -38,22 +38,22 @@ Options:
               // current time is written to DB
       "from": "date",
       "type": "timestamp",
-      "format": "jsDate" // field "format" is required for timestamp.
+      "format": "jsDate"  // field "format" is required for timestamp.
                           // in this case means that string will by parsed as
                           // JavaScript date string format
                           // https://www.w3schools.com/js/js_date_formats.asp
     },
     "fieldSchema": {
-      "name": { // fields "from" and "type" are required
+      "name": {           // fields "from" and "type" are required
         "from": "name",
-        "type": "string" // influxdb string target type
+        "type": "string"  // influxdb string target type
       },
       "latitude": {
-        "from": "lat", // we use field "lat" from CSV to fill up field "latitude" in DB
-        "type": "float" // influxdb float target type
+        "from": "lat",    // we use field "lat" from CSV to fill up field "latitude" in DB
+        "type": "float"   // influxdb float target type
       },
       "longitude": {
-        "from": "lng", // we use field "lng" from CSV to fill up field "longitude" in DB
+        "from": "lng",    // we use field "lng" from CSV to fill up field "longitude" in DB
         "type": "float"
       }
     },
@@ -75,6 +75,9 @@ Options:
 See [examples](examples).
 
 ## Changelog
+
+###### 1.0.0
+- Fix bad import of string like `"3rd district, Silver Spring"` -- with quotes and commas
 
 ###### 0.0.13
 - Optional "Time" field in config. 

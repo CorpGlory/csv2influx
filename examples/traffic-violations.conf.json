@@ -15,8 +15,8 @@
     },
     "tagSchema": {
       "agency": {
-        "from": "Agency",
-        "type": "*"
+        "from": "SubAgency",
+        "type": "string"
       }
     }
   },
