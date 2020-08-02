@@ -64,7 +64,7 @@ these columns into one using format `"${Latitude},${Longitude}"`:
 
 ```
 
-This example is bases on a [github comment](https://github.com/CorpGlory/csv2influx/issues/28#issuecomment-335570628)
+This example is based on [github comment](https://github.com/CorpGlory/csv2influx/issues/28#issuecomment-335570628)
 
 ### Run
 
