@@ -1,4 +1,4 @@
-# Air Quality
+## Air Quality
 Based on https://archive.ics.uci.edu/ml/datasets/Air+quality.
 First two columns merged to one.
 
@@ -14,7 +14,7 @@ See next example to learn how to merge Date/Time
 csv2influx --config air-quality.conf.json air-quality.csv
 ```
 
-# Traffic Violations
+## Traffic Violations
 
 Based on https://catalog.data.gov/dataset/traffic-violations-56dda (top 10 rows)
 
@@ -33,7 +33,7 @@ Also, you can merge any field or tag using template-string-like syntax.
 Let's say you have a csv file with columns `Latitude` and `Longitude`, but in the you want to merge
 these columns into one using format `"${Latitude},${Longitude}"`:
 
-### Example
+[traffic-violations.conf.json](traffic-violations.conf.json):
 ```javascript
 {
   // ...
