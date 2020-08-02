@@ -11,7 +11,6 @@ function parseValue(recordValue, mappingObject) {
     // convert millisconds to nanoseconds
     return (new Date(recordValue).getTime()) * 1000 * 1000;
   }
-
   return recordValue;
 }
 
@@ -70,6 +69,7 @@ function convertSchemaToObject(schema, namesMapping, record) {
   return obj;
 }
 
+// TODO: rename it to Csv2Influx -- because this it the core of the lib
 class Importer {
 
   constructor(config, inputFile, progressBar) {
@@ -117,6 +117,7 @@ class Importer {
       this.config.csv.columns = (cols) => {
         for(var key in this.fieldSchema) {
           // if 'from' field is an array - checking each of array items
+          // TODO: move this Array/Template logic to a separate function-folder
           if(Array.isArray(this.fieldsNamesMapping[key])) {
             this.fieldsNamesMapping[key].forEach(el => this._checkColInCols(el, cols));
           } else {
@@ -215,6 +216,8 @@ class Importer {
         return parseValue(record[this.timeObject.from], this.timeObject);
       }
     } else {
+      // TODO: remove this 1000 constant multiplication
+      // TODO: compare it with parseValue() -- it had simillar mult
       return Date.now() * 1000 * 1000;
     }
   }
@@ -224,9 +227,8 @@ module.exports = {
   Importer,
   countFileLines,
   
-  // for testing
+  // only for testing
   parseValue,
   flatSchema,
   convertSchemaToObject
-
 }

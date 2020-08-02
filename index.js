@@ -1,12 +1,13 @@
 #! /usr/bin/env node
-
-const minimist = require('minimist');
 const config = require('./config');
 const importer = require('./importer');
+
+const minimist = require('minimist');
 const progress = require('progress');
 const fs = require('fs');
 
-const usage = `
+
+const TXT_USAGE = `
 Usage:
   csv2influx init                     Creates template config file
   csv2influx [options] data.csv       Imports file data.csv to your influxDB
@@ -65,6 +66,6 @@ if(args._.length > 0) {
       .catch(err => console.error(err));
   }
 } else {
-  console.log(usage);
+  console.log(TXT_USAGE);
   process.exit(0);
 }

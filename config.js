@@ -97,6 +97,5 @@ module.exports = {
   loadConfig,
   
   // only for testing
-  
   _checkConfigObject
 }

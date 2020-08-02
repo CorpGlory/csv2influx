@@ -48,7 +48,7 @@ these columns into one using format `"${Latitude},${Longitude}"`:
       "coordinates": {
         // fields "Latitude" and "Longitude" will be concatenated 
         // with "," delimiter to create "coordinates" field
-        "from": "${Latitude},${Longitude}",
+        "from": "${Latitude},${Longitude}",  // see /src/template.js for more info
         "type": "string"
       }
     },
