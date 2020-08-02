@@ -1,6 +1,6 @@
 {
-  "influxdbUrl": "http://127.0.0.1:8086/traffic_violations",
-  "measurementName": "events",
+  "influxdbUrl": "http://127.0.0.1:8086/traffic",
+  "measurementName": "violations",
   "mapping": {
     "time": {
       "from": ["Date Of Stop", "Time Of Stop"],

@@ -29,9 +29,9 @@ Options:
 ```javascript
 
 {
-  "influxdbUri": "http://127.0.0.1:8086/database-name", // Database has to exist
+  "influxdbUri": "http://127.0.0.1:8086/database_name", // Database has to exist
   // URI format: http://user:pass@localhost:port,anotherhost:port,yetanother:port/mydatabase
-  "measurementName": "measurment-name",
+  "measurementName": "measurment_name",
   "mapping": {
     "time": { // specifies CSV-fields used to get time.
               // In case it's not defined you get WARNING and

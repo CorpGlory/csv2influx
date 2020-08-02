@@ -1,6 +1,6 @@
 {
-  "influxdbUrl": "http://127.0.0.1:8086/air_metrics",
-  "measurementName": "air_quality",
+  "influxdbUrl": "http://127.0.0.1:8086/air",
+  "measurementName": "quality",
   "mapping": {
     "time": {
       "from": "Date",

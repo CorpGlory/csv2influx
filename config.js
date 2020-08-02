@@ -4,8 +4,8 @@ const fs = require('fs');
 
 const DEFAULT_CONF_FILE_NAME = 'csv2influx.conf.json';
 const INIT_CONFIG = {
-  influxdbUri: 'http://127.0.0.1:8086/database-name',
-  measurementName: 'measurment-name',
+  influxdbUri: 'http://127.0.0.1:8086/database_name',
+  measurementName: 'measurment_name',
   mapping: {
     time: {
       from: 'date',
