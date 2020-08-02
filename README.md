@@ -90,6 +90,7 @@ See [examples](examples).
 * [hastic.io](https://hastic.io/) -- tool for analysing metrics from tsdbs with python and grafana
 * [@corpglory/tsdb-kit](https://github.com/CorpGlory/tsdb-kit) -- 
   library for extracting metrics from influx and other tsdbs
+* https://corpglory.com/s/grafana-data-exporter/ -- a way to extract big datasets from Grafana to csv
 
 ## About CorpGlory Inc.
 The project developed by [CorpGlory Inc.](https://corpglory.com/), a company which provides high 
