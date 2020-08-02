@@ -83,6 +83,11 @@ See [examples](examples).
 -  Tags support
 -  Merging CSV-fields using template-sting-like-syntax
 
+## See also
+* [hastic.io](https://hastic.io/) -- tool for analysing metrics from tsdbs with python and grafana
+* [@corpglory/tsdb-kit](https://github.com/CorpGlory/tsdb-kit) -- 
+  library for extracting metrics from influx and other tsdbs
+
 ## About CorpGlory Inc.
 The project developed by [CorpGlory Inc.](https://corpglory.com/), a company which provides high 
 quality software development, data visualization, Grafana and monitoring consulting.
